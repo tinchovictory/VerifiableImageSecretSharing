@@ -1,13 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "matrix.h"
 
 struct matrix {
-  int **matrix;
+  float **matrix;
   int height; // m
   int width; // n
 };
+
+
+/* Helper functions declaration */
+matrix_t getCofactor(const matrix_t matrix, int row, int column, matrix_t cofactor);
+matrix_t getAdjoint(const matrix_t matrix);
+
+
 
 
 /*
@@ -34,7 +42,7 @@ matrix_t new_matrix(int height, int width) {
   matrix->height = height;
 
   /* Init inner matrix data structure */
-  matrix->matrix = (int **) malloc(sizeof(int *) * height);
+  matrix->matrix = (float **) malloc(sizeof(int *) * height);
   if(matrix->matrix == NULL) {
     free(matrix);
     return NULL;
@@ -125,12 +133,36 @@ matrix_t transpose_matrix(const matrix_t matrix) {
 }
 
 /*
- * Inverse param matrix in place
- * If matrix is not invertible return 0
- * On success return 1
+ * Inverse param matrix
+ * If matrix is not invertible return NULL
  */
-int inverse_matrix(matrix_t matrix) {
-  return 0;
+matrix_t inverse_matrix(const matrix_t matrix) {
+  matrix_t adjoint, inverse;
+
+  int det = determinant_of_matrix(matrix);
+  if(det == 0) {
+    return NULL;
+  }
+
+  adjoint = getAdjoint(matrix);
+  if(adjoint == NULL) {
+    return NULL;
+  }
+
+  inverse = new_matrix(matrix->height, matrix->width);
+  if(inverse == NULL) {
+    free_matrix(adjoint);
+    return NULL;
+  }
+
+  for(int i = 0; i < inverse->height; i++) {
+    for(int j = 0; j < inverse->width; j++) {
+      inverse->matrix[i][j] = adjoint->matrix[i][j] / det;
+    }
+  }
+
+  free_matrix(adjoint);
+  return inverse;
 }
 
 /*
@@ -167,6 +199,153 @@ matrix_t multiply_matrix(const matrix_t matrixA, const matrix_t matrixB) {
   return multiplied;
 }
 
+/*
+ * Determinant of matrix
+ * If out of memory error return -1
+ * Otherwise return the determinant of the matrix
+ */
+int determinant_of_matrix(const matrix_t matrix) {
+  matrix_t mat;
+  int det = 1, total = 1, idx;
+
+  /* Clone matrix to avoid changeing it */
+  mat = clone_matrix(matrix);
+  if(mat == NULL) {
+    return -1;
+  }
+
+  /* Loop over the diagonal */
+  for(int i = 0; i < mat->width; i++) {
+    idx = i;
+
+    /* Find the non-zero index */
+    while(idx < mat->height && mat->matrix[idx][i] == 0) {
+      idx++;
+    }
+
+
+    /* The determinant of the matrix is 0 */
+    if(idx == mat->height) {
+      free_matrix(mat);
+      return 0;
+    }
+
+    /* Swap row */
+    if(idx != i) {
+      for(int j = 0; j < mat->width; j++) {
+        int aux = mat->matrix[i][j];
+        mat->matrix[i][j] = mat->matrix[idx][j];
+        mat->matrix[idx][j] = aux;
+      }
+      /* Determinant sign changes when we shift rows */
+      det *= (int) pow(-1, idx - i);
+    }
+
+    /* Loop over the rows below the diagonal */
+    for(int j = i + 1; j < mat->height; j++) {
+      int num = mat->matrix[j][i];
+
+      /* Loop over the current row items */
+      for(int k = 0; k < mat->width; k++) {
+        /* Make the diagonal element and the next row equal */
+        mat->matrix[j][k] = (mat->matrix[i][i] * mat->matrix[j][k]) - (num * mat->matrix[i][k]);
+      }
+      /* Det(kA) = k Det(A) */
+      total *= mat->matrix[i][i];
+    }
+
+  }
+  
+  /* Multiply the diagonal elements */
+  for(int i = 0; i < mat->width; i++) {
+    det *= mat->matrix[i][i];
+  }
+
+  free_matrix(mat);
+
+  return det/total;
+}
+
+
+/*
+ * Substract matrixB from matrixA
+ * matrixA - matrixB
+ * Return new matrix with the operation
+ */
+matrix_t substract_matrix(const matrix_t matrixA, const matrix_t matrixB) {
+  matrix_t substract;
+
+  if(matrixA == NULL || matrixB == NULL) {
+    return NULL;
+  }
+
+  if(matrixA->height != matrixB->height || matrixA->width != matrixB->width) {
+    return NULL;
+  }
+
+  substract = clone_matrix(matrixA);
+  if(substract == NULL) {
+    return NULL;
+  }
+
+  for(int i = 0; i < substract->height; i++) {
+    for(int j = 0; j < substract->width; j++) {
+      substract->matrix[i][j] -= matrixB->matrix[i][j];
+    }
+  }
+
+  return substract;
+}
+
+/*
+ * Project matrix
+ * Projection is (A x ( (A' x A) ^-1 ) x A')
+ * Return NULL on error
+ */
+matrix_t project_matrix(const matrix_t matrix) {
+  matrix_t projection = NULL, transpose = NULL, multipied = NULL, inverse = NULL;
+  
+  if(matrix == NULL) {
+    return NULL;
+  }
+
+  /* Get A' */
+  transpose = transpose_matrix(matrix);
+  if(transpose == NULL) {
+    goto out;
+  }
+
+  /* Get (A' x A) */
+  multipied = multiply_matrix(transpose, matrix);
+  if(multipied == NULL) {
+    goto out;
+  }
+
+  /* Get (A' x A)^-1 */
+  inverse = inverse_matrix(multipied);
+  if(inverse == NULL) {
+    goto out;
+  }
+
+  free_matrix(multipied);
+
+  multipied = multiply_matrix(matrix, inverse);
+  if(multipied == NULL) {
+    goto out;
+  }
+
+  projection = multiply_matrix(multipied, transpose);
+
+  /* Free up all matrix */
+  out:
+  free_matrix(transpose);
+  free_matrix(multipied);
+  free_matrix(inverse);
+
+  return projection;
+}
+
+
 
 int set_matrix(matrix_t matrix, int i, int j, int value) {
   if(matrix == NULL) {
@@ -194,9 +373,77 @@ void print_matrix(matrix_t matrix) {
 
   for(int i = 0; i < matrix->height; i++) {
     for(int j = 0; j < matrix->width; j++) {
-      printf("%d ", matrix->matrix[i][j]);
+      printf("%.2f ", matrix->matrix[i][j]);
     }
     printf("\n");
   }
   printf("\n");
+}
+
+
+
+/* Helper functions */
+
+matrix_t getCofactor(const matrix_t matrix, int row, int column, matrix_t cofactor) {
+  if(matrix == NULL) {
+    return NULL;
+  }
+
+  /* Loop over all rows and columns and copy them into param cofactor */
+  /* Skip row and column from param */
+  for(int i = 0, ic = 0; i < matrix->height; i++) {
+    for(int j = 0, jc = 0; j < matrix->width; j++) {
+      if(i != row && j != column) {
+        cofactor->matrix[ic][jc++] = matrix->matrix[i][j];
+      }
+    }
+    if(i != row) {
+      ic++;
+    }
+  }
+
+  return cofactor;
+}
+
+matrix_t getAdjoint(const matrix_t matrix) {
+  matrix_t adjoint, cofactor;
+  int sign = 1;
+
+  if(matrix == NULL) {
+    return NULL;
+  }
+
+  /* Alloc adjoint matrix with the same size as param matrix */
+  adjoint = new_matrix(matrix->height, matrix->width);
+  if(adjoint == NULL) {
+    return NULL;
+  }
+
+  /* Case matrix is of size 1 */
+  if(matrix->width == 1) {
+    adjoint->matrix[0][0] = 1;
+    return adjoint;
+  }
+
+  /* Alloc cofactor matrix only once */
+  cofactor = new_matrix(matrix->height - 1, matrix->width - 1);
+  if(cofactor == NULL) {
+    free_matrix(adjoint);
+    return NULL;
+  }
+
+  for(int i = 0; i < matrix->height; i++) {
+    for(int j = 0; j < matrix->width; j++) {
+      getCofactor(matrix, i, j, cofactor);
+
+      /* Sign is positive if sum of row and column idx is even */
+      sign = (i + j) % 2 == 0 ? 1 : -1;
+
+      /* Adjoint is the tranpose of the matrix */
+      adjoint->matrix[j][i] = sign * determinant_of_matrix(cofactor);
+    }
+  }
+
+  free_matrix(cofactor);
+  return adjoint;
 }
