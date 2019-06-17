@@ -1,0 +1,14 @@
+# Ignore everything
+*
+
+# Include all files with extension
+!*.*
+
+# Include all subdirectories
+!*/
+
+# Include Makefile
+!Makefile
+
+# Ignore vs code files
+.vscode
