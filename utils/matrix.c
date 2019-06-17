@@ -63,6 +63,7 @@ matrix_t new_matrix(int height, int width) {
   return matrix;
 }
 
+
 /*
  * Free up a matrix
  */
@@ -82,6 +83,7 @@ void free_matrix(matrix_t matrix) {
 
   free(matrix);
 }
+
 
 /*
  * Clone param matrix
@@ -109,6 +111,7 @@ matrix_t clone_matrix(const matrix_t matrix) {
   return clone;
 }
 
+
 /*
  * Transpose param matrix
  * Return new matrix transposed. Original matrix is not free up
@@ -135,6 +138,7 @@ matrix_t transpose_matrix(const matrix_t matrix) {
 
   return transpose;
 }
+
 
 /*
  * Inverse param matrix
@@ -169,6 +173,7 @@ matrix_t inverse_matrix(const matrix_t matrix) {
   return applyModulus(inverse);
 }
 
+
 /*
  * Multiply param matrixA with param matrixB
  * Return multiplied matrix
@@ -202,6 +207,7 @@ matrix_t multiply_matrix(const matrix_t matrixA, const matrix_t matrixB) {
 
   return applyModulus(multiplied);
 }
+
 
 /*
  * Determinant of matrix
@@ -301,6 +307,7 @@ matrix_t substract_matrix(const matrix_t matrixA, const matrix_t matrixB) {
   return applyModulus(substract);
 }
 
+
 /*
  * Project matrix
  * Projection is (A x ( (A' x A) ^-1 ) x A')
@@ -351,6 +358,10 @@ matrix_t project_matrix(const matrix_t matrix) {
 
 
 
+/*
+ * Set value to matrix in position (i, j)
+ * Returns 1 on success, 0 on error
+ */
 int set_matrix(matrix_t matrix, int i, int j, int value) {
   if(matrix == NULL) {
     return 0;
@@ -372,6 +383,10 @@ int set_matrix(matrix_t matrix, int i, int j, int value) {
   return 1;
 }
 
+
+/*
+ * Print matrix
+ */
 void print_matrix(matrix_t matrix) {
   if(matrix == NULL) {
     printf("Unable to print matrix, it's null\n");
@@ -391,6 +406,12 @@ void print_matrix(matrix_t matrix) {
 
 /* Helper functions */
 
+/* 
+ * Get the cofactor matrix from the param matrix
+ * Removing param row and param column
+ * On error return NULL
+ * Cofactor matrix is left in the cofactor param and also returned
+ */
 static matrix_t getCofactor(const matrix_t matrix, int row, int column, matrix_t cofactor) {
   if(matrix == NULL) {
     return NULL;
@@ -412,6 +433,10 @@ static matrix_t getCofactor(const matrix_t matrix, int row, int column, matrix_t
   return cofactor;
 }
 
+/*
+ * Get the adjoint matrix from the param matrix
+ * On error return NULL
+ */
 static matrix_t getAdjoint(const matrix_t matrix) {
   matrix_t adjoint, cofactor;
   int sign = 1;
@@ -455,6 +480,9 @@ static matrix_t getAdjoint(const matrix_t matrix) {
   return adjoint;
 }
 
+/*
+ * Apply modulus to the param matrix in place
+ */
 static matrix_t applyModulus(matrix_t matrix) {
   if(matrix == NULL) {
     return NULL;

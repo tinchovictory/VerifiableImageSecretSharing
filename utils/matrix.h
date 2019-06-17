@@ -63,17 +63,14 @@ matrix_t project_matrix(const matrix_t matrix);
 
 
 /*
- *
+ * Set value to matrix in position (i, j)
+ * Returns 1 on success, 0 on error
  */
 int set_matrix(matrix_t matrix, int i, int j, int value);
 
 /*
- *
+ * Print matrix
  */
 void print_matrix(matrix_t matrix);
-
-/* MISSING
- *  - Apply modulus
- */
 
 #endif
