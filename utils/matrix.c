@@ -3,17 +3,21 @@
 #include <math.h>
 
 #include "matrix.h"
+#include "multiplicativeInverse.h"
+
+#define MODULUS 251
 
 struct matrix {
-  float **matrix;
+  int **matrix;
   int height; // m
   int width; // n
 };
 
 
 /* Helper functions declaration */
-matrix_t getCofactor(const matrix_t matrix, int row, int column, matrix_t cofactor);
-matrix_t getAdjoint(const matrix_t matrix);
+static matrix_t getCofactor(const matrix_t matrix, int row, int column, matrix_t cofactor);
+static matrix_t getAdjoint(const matrix_t matrix);
+static matrix_t applyModulus(matrix_t matrix);
 
 
 
@@ -42,7 +46,7 @@ matrix_t new_matrix(int height, int width) {
   matrix->height = height;
 
   /* Init inner matrix data structure */
-  matrix->matrix = (float **) malloc(sizeof(int *) * height);
+  matrix->matrix = (int **) malloc(sizeof(int *) * height);
   if(matrix->matrix == NULL) {
     free(matrix);
     return NULL;
@@ -157,12 +161,12 @@ matrix_t inverse_matrix(const matrix_t matrix) {
 
   for(int i = 0; i < inverse->height; i++) {
     for(int j = 0; j < inverse->width; j++) {
-      inverse->matrix[i][j] = adjoint->matrix[i][j] / det;
+      inverse->matrix[i][j] = adjoint->matrix[i][j] * multiplicative_inverse(det);
     }
   }
 
   free_matrix(adjoint);
-  return inverse;
+  return applyModulus(inverse);
 }
 
 /*
@@ -196,7 +200,7 @@ matrix_t multiply_matrix(const matrix_t matrixA, const matrix_t matrixB) {
     }
   }
 
-  return multiplied;
+  return applyModulus(multiplied);
 }
 
 /*
@@ -294,7 +298,7 @@ matrix_t substract_matrix(const matrix_t matrixA, const matrix_t matrixB) {
     }
   }
 
-  return substract;
+  return applyModulus(substract);
 }
 
 /*
@@ -342,7 +346,7 @@ matrix_t project_matrix(const matrix_t matrix) {
   free_matrix(multipied);
   free_matrix(inverse);
 
-  return projection;
+  return applyModulus(projection);
 }
 
 
@@ -360,7 +364,10 @@ int set_matrix(matrix_t matrix, int i, int j, int value) {
     return 0;
   }
 
-  matrix->matrix[i][j] = value;
+  while(value < 0) {
+    value += MODULUS;
+  }
+  matrix->matrix[i][j] = value % MODULUS;
 
   return 1;
 }
@@ -373,7 +380,7 @@ void print_matrix(matrix_t matrix) {
 
   for(int i = 0; i < matrix->height; i++) {
     for(int j = 0; j < matrix->width; j++) {
-      printf("%.2f ", matrix->matrix[i][j]);
+      printf("%4d ", matrix->matrix[i][j]);
     }
     printf("\n");
   }
@@ -384,7 +391,7 @@ void print_matrix(matrix_t matrix) {
 
 /* Helper functions */
 
-matrix_t getCofactor(const matrix_t matrix, int row, int column, matrix_t cofactor) {
+static matrix_t getCofactor(const matrix_t matrix, int row, int column, matrix_t cofactor) {
   if(matrix == NULL) {
     return NULL;
   }
@@ -405,7 +412,7 @@ matrix_t getCofactor(const matrix_t matrix, int row, int column, matrix_t cofact
   return cofactor;
 }
 
-matrix_t getAdjoint(const matrix_t matrix) {
+static matrix_t getAdjoint(const matrix_t matrix) {
   matrix_t adjoint, cofactor;
   int sign = 1;
 
@@ -446,4 +453,21 @@ matrix_t getAdjoint(const matrix_t matrix) {
 
   free_matrix(cofactor);
   return adjoint;
+}
+
+static matrix_t applyModulus(matrix_t matrix) {
+  if(matrix == NULL) {
+    return NULL;
+  }
+
+  for(int i = 0; i < matrix->height; i++) {
+    for(int j = 0; j < matrix->width; j++) {
+      while(matrix->matrix[i][j] < 0) {
+        matrix->matrix[i][j] += MODULUS;
+      }
+      matrix->matrix[i][j] %= MODULUS;
+    }
+  }
+
+  return matrix;
 }
