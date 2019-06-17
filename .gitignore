@@ -12,3 +12,5 @@
 
 # Ignore vs code files
 .vscode
+
+build/
