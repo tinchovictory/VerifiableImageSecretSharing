@@ -34,5 +34,11 @@ set(CMAKE_C_FLAGS, "${CMAKE_C_FLAGS} -pthread -pedantic -pedantic-errors -Wall -
 add_executable(test
                 utils/testMatrix.c
                 utils/matrix.c
-                utils/matrix.h)
+                utils/matrix.h
+                utils/multiplicativeInverse.c)
 
+add_executable(encrypter
+                main.c
+                encrypter/encrypter.c
+                utils/matrix.c
+                utils/multiplicativeInverse.c)
