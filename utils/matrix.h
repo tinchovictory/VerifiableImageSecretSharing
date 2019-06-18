@@ -62,6 +62,13 @@ matrix_t substract_matrix(const matrix_t matrixA, const matrix_t matrixB);
 matrix_t project_matrix(const matrix_t matrix);
 
 /*
+ * Concatenate matrixA | matrixB
+ * Return new matrix with new size and values
+ * Return NULL on error
+ */
+matrix_t concatenate_matrix(const matrix_t matrixA, const matrix_t matrixB);
+
+/*
  * Getter of the value in the position (i, j)
  * If position is not valid return -1
  */

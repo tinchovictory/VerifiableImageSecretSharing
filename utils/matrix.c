@@ -358,6 +358,46 @@ matrix_t project_matrix(const matrix_t matrix) {
 
 
 /*
+ * Concatenate matrixA | matrixB
+ * Return new matrix with new size and values
+ * Return NULL on error
+ */
+matrix_t concatenate_matrix(const matrix_t matrixA, const matrix_t matrixB) {
+  matrix_t concatenate;
+
+  if(matrixA == NULL || matrixB == NULL) {
+    return NULL;
+  }
+
+  if(matrixA->height != matrixB->height) {
+    return NULL;
+  }
+
+  /* Allocate memory */
+  concatenate = new_matrix(matrixA->height, matrixA->width + matrixB->width);
+  if(concatenate == NULL) {
+    return NULL;
+  }
+
+  /* Copy matrix A into concatenate */
+  for(int i = 0; i < concatenate->height; i++) {
+    for(int j = 0; j < matrixA->width; j++) {
+      concatenate->matrix[i][j] = matrixA->matrix[i][j];
+    }
+  }
+  
+  /* Copy matrix B into concatenate */
+  for(int i = 0; i < concatenate->height; i++) {
+    for(int j = 0; j < matrixB->width; j++) {
+      concatenate->matrix[i][j + matrixA->width] = matrixB->matrix[i][j];
+    }
+  }
+
+  return concatenate;
+}
+
+
+/*
  * Getter of the value in the position (i, j)
  * If position is not valid return -1
  */
