@@ -61,6 +61,11 @@ matrix_t substract_matrix(const matrix_t matrixA, const matrix_t matrixB);
  */
 matrix_t project_matrix(const matrix_t matrix);
 
+/*
+ * Getter of the value in the position (i, j)
+ * If position is not valid return -1
+ */
+int get_matrix(const matrix_t matrix, int i, int j);
 
 /*
  * Set value to matrix in position (i, j)
@@ -69,8 +74,20 @@ matrix_t project_matrix(const matrix_t matrix);
 int set_matrix(matrix_t matrix, int i, int j, int value);
 
 /*
+ * Matrix height getter
+ * On error return -1
+ */
+int get_matrix_height(const matrix_t matrix);
+
+/*
+ * Matrix width getter
+ * On error return -1
+ */
+int get_matrix_width(const matrix_t matrix);
+
+/*
  * Print matrix
  */
-void print_matrix(matrix_t matrix);
+void print_matrix(const matrix_t matrix);
 
 #endif
