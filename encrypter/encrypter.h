@@ -1,7 +1,7 @@
 #ifndef __ENCRYPTER_H__
 #define __ENCRYPTER_H__
 
-#include "../utils/matrix.h"
+#include "../utils/matrix/matrix.h"
 
 /*
  * Encrypter

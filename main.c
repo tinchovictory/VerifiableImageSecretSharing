@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "utils/matrix.h"
+#include "utils/matrix/matrix.h"
 #include "encrypter/encrypter.h"
 
 static matrix_t readImage();

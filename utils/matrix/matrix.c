@@ -3,7 +3,7 @@
 #include <math.h>
 
 #include "matrix.h"
-#include "multiplicativeInverse.h"
+#include "../multiplicativeInverse/multiplicativeInverse.h"
 
 #define MODULUS 251
 
