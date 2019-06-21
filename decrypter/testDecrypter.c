@@ -16,7 +16,15 @@ int main(void) {
     return 1;
   }
 
-  decrypt(shares, sharesIdx, reminder);
+  struct decrypt_output output = decrypt(shares, sharesIdx, reminder);
+
+  printf("Mat S is \n");
+  print_matrix(output.secret);
+  printf("Mat W is \n");
+  print_matrix(output.watermark);
+
+  free_matrix(output.secret);
+  free_matrix(output.watermark);
 
   return 0;
 }

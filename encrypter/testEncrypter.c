@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "../utils/matrix/matrix.h"
+#include "../utils/matrixArray/matrixArray.h"
 #include "encrypter.h"
 
 static matrix_t readImage();
@@ -15,7 +16,19 @@ int main(void) {
     return 1;
   }
 
-  encrypt(image, watermark, 2, 4);
+  struct encrypt_output output = encrypt(image, watermark, 2, 4);
+
+  if(output.shares == NULL || output.remainder == NULL) {
+    printf("Something failed\n");
+    return 1;
+  }
+
+  printf("Mat Rw is:\n");
+  print_matrix(output.remainder);
+  print_matrix_array(output.shares, "Sh");
+
+  free_matrix_array(output.shares);
+  free_matrix(output.remainder);
 
   return 0;
 }

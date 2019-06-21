@@ -13,9 +13,10 @@ static matrix_t build_matrix_R(const int sharesIdx[], const matrix_array_t array
 /*
  * Decrypter
  */
-void decrypt(const matrix_array_t shares, const int sharesIdx[], const matrix_t remainder) {
+struct decrypt_output decrypt(const matrix_array_t shares, const int sharesIdx[], const matrix_t remainder) {
   matrix_t matB = NULL, doubleS = NULL, matR = NULL, matS = NULL, matW = NULL;
   matrix_array_t arrayG = NULL;
+  struct decrypt_output output = {NULL, NULL};
 
   /* Build matrix B */
   matB = build_matrix_B(shares);
@@ -31,7 +32,9 @@ void decrypt(const matrix_array_t shares, const int sharesIdx[], const matrix_t 
     goto out;
   }
 
-  // Free matB
+  /* Mat B is not used anymore */
+  free_matrix(matB);
+  matB = NULL;
 
   /* Build matrices G */
   arrayG = build_matrices_G(shares);
@@ -46,11 +49,19 @@ void decrypt(const matrix_array_t shares, const int sharesIdx[], const matrix_t 
     goto out;
   }
 
+  /* Array G is not used anymore */
+  free_matrix_array(arrayG);
+  arrayG = NULL;
+
   /* Build secret matrix S */
   matS = add_matrix(doubleS, matR);
   if(matS == NULL) {
     goto out;
   }
+
+  /* Mat R is not used anymore */
+  free_matrix(matR);
+  matR = NULL;
 
   /* Build watermark */
   matW = add_matrix(doubleS, remainder);
@@ -58,27 +69,17 @@ void decrypt(const matrix_array_t shares, const int sharesIdx[], const matrix_t 
     goto out;
   }
 
-
-  // TEST
-  printf("Mat B is \n");
-  print_matrix(matB);
-  printf("Mat double S is \n");
-  print_matrix(doubleS);
-  print_matrix_array(arrayG, "G");
-  printf("Mat R is \n");
-  print_matrix(matR);
-  printf("Mat S is \n");
-  print_matrix(matS);
-  printf("Mat W is \n");
-  print_matrix(matW);
+  /* Set values to output stucture */
+  output.secret = matS;
+  output.watermark = matW;
 
   out:
   free_matrix(matB);
   free_matrix(doubleS);
   free_matrix_array(arrayG);
   free_matrix(matR);
-  free_matrix(matS);
-  free_matrix(matW);
+
+  return output;
 }
 
 

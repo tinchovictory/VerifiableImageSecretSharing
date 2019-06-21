@@ -3,7 +3,6 @@
 #include <math.h>
 
 #include "encrypter.h"
-#include "../utils/matrixArray/matrixArray.h"
 
 #define MODULUS 251
 
@@ -17,14 +16,15 @@ static matrix_array_t computeShares(const matrix_array_t vArray, const matrix_ar
 
 
 
-void encrypt(const matrix_t image, const matrix_t watermark, int k, int n) {
+struct encrypt_output encrypt(const matrix_t image, const matrix_t watermark, int k, int n) {
   matrix_t matA = NULL, doubleS = NULL, matR = NULL, matRw = NULL;
   matrix_array_t xArray = NULL, vArray = NULL, gArray = NULL, sharesArray = NULL;
+  struct encrypt_output output = {NULL, NULL};
 
   /* Build matrix A */
   matA = buildMatrixA(get_matrix_height(image), k);
   if(matA == NULL) {
-    return;
+    goto out;
   }
 
   /* Calculate matrix projection */
@@ -51,13 +51,22 @@ void encrypt(const matrix_t image, const matrix_t watermark, int k, int n) {
     goto out;
   }
 
-  // freeMatrixArray(xArray, n);
+  /* Mat A is not used anymore */
+  free_matrix(matA);
+  matA = NULL;
+  /* Array X is not used anymore */
+  free_matrix_array(xArray);
+  xArray = NULL;
 
   /* Create shares */
   gArray = computeMatricesG(matR, vArray, k, n);
   if(gArray == NULL) {
     goto out;
   }
+  
+  /* Mat R is not used anymore */
+  free_matrix(matR);
+  matR = NULL;
 
   /* Compute watermark remainder */
   matRw = substract_matrix(watermark, doubleS);
@@ -65,38 +74,29 @@ void encrypt(const matrix_t image, const matrix_t watermark, int k, int n) {
     goto out;
   }
 
+  /* Matrix double S is not used anymore */
+  free_matrix(doubleS);
+  doubleS = NULL;
+
   /* Divide image shares */
   sharesArray = computeShares(vArray, gArray);
   if(sharesArray == NULL) {
     goto out;
   }
 
-  // TEST
-  printf("Mat A is:\n");
-  print_matrix(matA);
-  printf("Mat doubleS is:\n");
-  print_matrix(doubleS);
-  printf("Mat R is:\n");
-  print_matrix(matR);
-
-  print_matrix_array(xArray, "X");
-  print_matrix_array(vArray, "V");
-  print_matrix_array(gArray, "G");
-
-  printf("Mat Rw is:\n");
-  print_matrix(matRw);
-
-  print_matrix_array(sharesArray, "Sh");
+  /* Fill output structure */
+  output.shares = sharesArray;
+  output.remainder = matRw;
 
   out:
   free_matrix_array(xArray);
   free_matrix_array(vArray);
   free_matrix_array(gArray);
-  free_matrix_array(sharesArray);
   free_matrix(matA);
   free_matrix(doubleS);
   free_matrix(matR);
-  free_matrix(matRw);
+
+  return output;
 }
 
 
