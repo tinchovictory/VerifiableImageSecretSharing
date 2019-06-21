@@ -14,8 +14,6 @@ static matrix_array_t computeVectorsV(const matrix_t matA, const matrix_array_t 
 static matrix_array_t computeMatricesG(const matrix_t matR, const matrix_array_t vArray, int k, int n);
 static int getGFromR(const matrix_t matR, int k, int i, int j, int t);
 static matrix_array_t computeShares(const matrix_array_t vArray, const matrix_array_t gArray);
-// static matrix_t* allocMatrixArray(int length);
-// static void freeMatrixArray(matrix_t *array, int length);
 
 
 
@@ -255,21 +253,3 @@ static matrix_array_t computeShares(const matrix_array_t vArray, const matrix_ar
 
   return sharesArray;
 }
-
-
-// static matrix_t* allocMatrixArray(int length) {
-//   matrix_t *array = NULL;
-//   array = calloc(length, sizeof(matrix_t));
-//   return array;
-// }
-
-// static void freeMatrixArray(matrix_t *array, int length) {
-//   if(array == NULL) {
-//     return;
-//   }
-
-//   for(int i = 0; i < length; i++) {
-//     free_matrix(array[i]);
-//   }
-//   free(array);
-// }
