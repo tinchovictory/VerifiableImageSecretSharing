@@ -16,6 +16,7 @@ static int getGFromR(const matrix_t matR, int k, int i, int j, int t);
 static matrix_array_t computeShares(const matrix_array_t vArray, const matrix_array_t gArray);
 static int * build_shares_idx(int n);
 static int has_value(int *arr, int size, int value);
+static int isAInvertible(matrix_t mat);
 
 
 
@@ -122,17 +123,42 @@ static matrix_t buildMatrixA(int m, int k) {
   }
 
   /* Set random values */
-  set_matrix(matrix, 0, 0, 3); // DEBUG
-  set_matrix(matrix, 0, 1, 7); // DEBUG
-  set_matrix(matrix, 1, 0, 6); // DEBUG
-  set_matrix(matrix, 1, 1, 1); // DEBUG
-  set_matrix(matrix, 2, 0, 2); // DEBUG
-  set_matrix(matrix, 2, 1, 5); // DEBUG
-  set_matrix(matrix, 3, 0, 6); // DEBUG
-  set_matrix(matrix, 3, 1, 6); // DEBUG
+  do {
+    for(int i = 0; i < m; i++) {
+      for(int j = 0; j < k; j++) {
+        set_matrix(matrix, i, j, next_char());
+      }
+    }
+  /* Check if it is full rank and invertible */
+  } while(!is_matrix_full_rank(matrix) || !isAInvertible(matrix));
 
   return matrix;
 }
+
+/* Check if (mat' mat) is invertible */
+static int isAInvertible(matrix_t mat) {
+  matrix_t transpose, multiplied;
+  int ans;
+
+  transpose = transpose_matrix(mat);
+  if(transpose == NULL) {
+    return 0;
+  }
+
+  multiplied = multiply_matrix(transpose, mat);
+  if(multiplied == NULL) {
+    free_matrix(transpose);
+    return 0;
+  }
+
+  ans = is_matrix_invertible(multiplied);
+
+  free_matrix(transpose);
+  free_matrix(multiplied);
+
+  return ans;
+}
+
 
 static matrix_array_t buildVectorsX(int k, int n) {
   matrix_array_t xArray;

@@ -5,11 +5,11 @@
 
 /*
  * Apply gauss-jordan elimination to given matrix
- * It's assumed the matrix is M x N, with N = ( M + 1 )
- * The last column of the matrix represent the result values
+ * It's assumed the matrix is M x N
+ * The width param defines the amount of columns to use in the elimination
  * Return NULL on error
  */
-matrix_t apply_gauss_elimination(const matrix_t matrix);
+matrix_t apply_gauss_elimination(const matrix_t matrix, int width);
 
 
 #endif

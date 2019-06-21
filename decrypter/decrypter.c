@@ -206,7 +206,7 @@ static matrix_t build_matrix_R(const int sharesIdx[], const matrix_array_t array
       }
 
       /* Calculate gauss jordan elimination */
-      solvedEq = apply_gauss_elimination(matEq);
+      solvedEq = apply_gauss_elimination(matEq, get_matrix_width(matEq) - 1);
       if(solvedEq == NULL) {
         free_matrix(matR);
         free_matrix(matEq);

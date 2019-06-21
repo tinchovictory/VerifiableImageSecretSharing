@@ -4,6 +4,7 @@
 
 #include "matrix.h"
 #include "../multiplicativeInverse/multiplicativeInverse.h"
+#include "../gaussElimination/gaussElimination.h"
 
 #define MODULUS 251
 
@@ -541,6 +542,51 @@ int are_matrices_equal(const matrix_t matrixA, const matrix_t matrixB) {
   return 1;
 }
 
+
+/*
+ * Check if matrix is full rank
+ * Return 0 on false
+ */
+int is_matrix_full_rank(const matrix_t matrix) {
+  matrix_t gauss;
+  int count = 0;
+
+  if(matrix == NULL) {
+    return 0;
+  }
+
+  /* Apply gauss elimination to matrix */
+  gauss = apply_gauss_elimination(matrix, matrix->width);
+  if(gauss == NULL) {
+    return 0;
+  }
+
+  /* Count the non-empty rows of the matrix */
+  for(int i = 0; i < gauss->height; i++) {
+    int sum = 0;
+    for(int j = 0; j < gauss->width && !sum; j++) {
+      sum += gauss->matrix[i][j];
+    }
+    if(sum != 0) {
+      count++;
+    }
+  }
+
+  free_matrix(gauss);
+
+  if(matrix->width < matrix->height) {
+    return count == matrix->width;
+  }
+  return count == matrix->height;
+}
+
+/*
+ * Check if matrix is invertible
+ * Return 0 on false
+ */
+int is_matrix_invertible(const matrix_t matrix) {
+  return determinant_of_matrix(matrix) != 0;
+}
 
 
 

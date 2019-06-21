@@ -23,7 +23,7 @@ int main(void) {
   /* Print matrix */
   print_matrix(mat);
 
-  matrix_t ans = apply_gauss_elimination(mat);
+  matrix_t ans = apply_gauss_elimination(mat, get_matrix_width(mat) - 1);
 
   print_matrix(ans);
 
@@ -42,7 +42,7 @@ int main(void) {
   
   print_matrix(mat);
 
-  ans = apply_gauss_elimination(mat);
+  ans = apply_gauss_elimination(mat, get_matrix_width(mat) - 1);
 
   print_matrix(ans);
 

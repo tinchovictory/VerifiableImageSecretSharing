@@ -7,11 +7,11 @@ static int swap_diagonal_row(matrix_t matrix, int diag);
 
 /*
  * Apply gauss-jordan elimination to given matrix
- * It's assumed the matrix is M x N, with N = ( M + 1 )
- * The last column of the matrix represent the result values
+ * It's assumed the matrix is M x N
+ * The width param defines the amount of columns to use in the elimination
  * Return NULL on error
  */
-matrix_t apply_gauss_elimination(const matrix_t matrix) {
+matrix_t apply_gauss_elimination(const matrix_t matrix, int width) {
   int diagInverse, value;
   matrix_t gauss = clone_matrix(matrix);
 
@@ -21,7 +21,7 @@ matrix_t apply_gauss_elimination(const matrix_t matrix) {
   }
 
   /* Iterate over */
-  for(int diag = 0; diag < get_matrix_width(gauss) - 1; diag++) {
+  for(int diag = 0; diag < width; diag++) {
     /* If diagonal value is 0 swap it with the next non-zero row */
     if(get_matrix(gauss, diag, diag) == 0) {
       if(!swap_diagonal_row(gauss, diag)) {

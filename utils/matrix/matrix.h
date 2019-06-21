@@ -107,6 +107,18 @@ int get_matrix_width(const matrix_t matrix);
 int are_matrices_equal(const matrix_t matrixA, const matrix_t matrixB);
 
 /*
+ * Check if matrix is full rank
+ * Return 0 on false
+ */
+int is_matrix_full_rank(const matrix_t matrix);
+
+/*
+ * Check if matrix is invertible
+ * Return 0 on false
+ */
+int is_matrix_invertible(const matrix_t matrix);
+
+/*
  * Print matrix
  */
 void print_matrix(const matrix_t matrix);
