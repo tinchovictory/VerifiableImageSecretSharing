@@ -309,6 +309,38 @@ matrix_t substract_matrix(const matrix_t matrixA, const matrix_t matrixB) {
 
 
 /*
+ * Add matrixA to matrixB
+ * matrixA + matrixB
+ * Return new matrix with the operation
+ * Return NULL on error
+ */
+matrix_t add_matrix(const matrix_t matrixA, const matrix_t matrixB) {
+  matrix_t add;
+
+  if(matrixA == NULL || matrixB == NULL) {
+    return NULL;
+  }
+
+  if(matrixA->height != matrixB->height || matrixA->width != matrixB->width) {
+    return NULL;
+  }
+
+  add = clone_matrix(matrixA);
+  if(add == NULL) {
+    return NULL;
+  }
+
+  for(int i = 0; i < add->height; i++) {
+    for(int j = 0; j < add->width; j++) {
+      add->matrix[i][j] += matrixB->matrix[i][j];
+    }
+  }
+
+  return applyModulus(add);
+}
+
+
+/*
  * Project matrix
  * Projection is (A x ( (A' x A) ^-1 ) x A')
  * Return NULL on error

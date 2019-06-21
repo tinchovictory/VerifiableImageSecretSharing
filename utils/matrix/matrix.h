@@ -55,6 +55,14 @@ int determinant_of_matrix(const matrix_t matrix);
 matrix_t substract_matrix(const matrix_t matrixA, const matrix_t matrixB);
 
 /*
+ * Add matrixA to matrixB
+ * matrixA + matrixB
+ * Return new matrix with the operation
+ * Return NULL on error
+ */
+matrix_t add_matrix(const matrix_t matrixA, const matrix_t matrixB);
+
+/*
  * Project matrix
  * Projection is (A x ( (A' x A) ^-1 ) x A')
  * Return NULL on error
