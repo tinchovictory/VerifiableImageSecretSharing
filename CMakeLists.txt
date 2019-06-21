@@ -56,3 +56,12 @@ add_executable(decrypter
                 utils/multiplicativeInverse/multiplicativeInverse.c
                 utils/matrixArray/matrixArray.c
                 utils/gaussElimination/gaussElimination.c)
+
+add_executable(encrypterDecrypter
+                testEncrypterDecrypter.c
+                encrypter/encrypter.c
+                decrypter/decrypter.c
+                utils/matrix/matrix.c
+                utils/multiplicativeInverse/multiplicativeInverse.c
+                utils/matrixArray/matrixArray.c
+                utils/gaussElimination/gaussElimination.c)
