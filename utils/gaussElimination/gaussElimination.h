@@ -4,13 +4,12 @@
 #include "../matrix/matrix.h"
 
 /*
- * Apply gauss-jordan elimination to given matrix in place
+ * Apply gauss-jordan elimination to given matrix
  * It's assumed the matrix is M x N, with N = ( M + 1 )
  * The last column of the matrix represent the result values
- * Return 0 on error
- * Return 1 on success
+ * Return NULL on error
  */
-int apply_gauss_elimination(matrix_t matrix);
+matrix_t apply_gauss_elimination(const matrix_t matrix);
 
 
 #endif

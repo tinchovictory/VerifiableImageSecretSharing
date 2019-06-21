@@ -23,12 +23,32 @@ int main(void) {
   /* Print matrix */
   print_matrix(mat);
 
-  int ans = apply_gauss_elimination(mat);
-  printf("gauss elimination ans: %d\n", ans);
+  matrix_t ans = apply_gauss_elimination(mat);
 
-  print_matrix(mat);
+  print_matrix(ans);
 
   free_matrix(mat);
+  free_matrix(ans);
+
+
+  // Test paper
+  mat = new_matrix(2, 3);
+  set_matrix(mat, 0, 0, 1);
+  set_matrix(mat, 0, 1, 1);
+  set_matrix(mat, 0, 2, 36);
+  set_matrix(mat, 1, 0, 1);
+  set_matrix(mat, 1, 1, 2);
+  set_matrix(mat, 1, 2, 71);
+  
+  print_matrix(mat);
+
+  ans = apply_gauss_elimination(mat);
+
+  print_matrix(ans);
+
+  free_matrix(mat);
+  free_matrix(ans);
+
 
   return 0;
 }

@@ -6,50 +6,53 @@
 static int swap_diagonal_row(matrix_t matrix, int diag);
 
 /*
- * Apply gauss-jordan elimination to given matrix in place
+ * Apply gauss-jordan elimination to given matrix
  * It's assumed the matrix is M x N, with N = ( M + 1 )
  * The last column of the matrix represent the result values
- * Return 0 on error
- * Return 1 on success
+ * Return NULL on error
  */
-int apply_gauss_elimination(matrix_t matrix) {
+matrix_t apply_gauss_elimination(const matrix_t matrix) {
   int diagInverse, value;
+  matrix_t gauss = clone_matrix(matrix);
 
   /* Check for valid matrix */
-  if(matrix == NULL) {
+  if(gauss == NULL) {
     return 0;
   }
 
-  /* Iterate over  */
-  for(int diag = 0; diag < get_matrix_width(matrix) - 1; diag++) {
+  /* Iterate over */
+  for(int diag = 0; diag < get_matrix_width(gauss) - 1; diag++) {
     /* If diagonal value is 0 swap it with the next non-zero row */
-    if(get_matrix(matrix, diag, diag) == 0) {
-      if(!swap_diagonal_row(matrix, diag)) {
-        return 0;
+    if(get_matrix(gauss, diag, diag) == 0) {
+      if(!swap_diagonal_row(gauss, diag)) {
+        free_matrix(gauss);
+        return NULL;
       }
     }
 
     /* Divide matrix by diagonal value */
-    diagInverse = multiplicative_inverse(get_matrix(matrix, diag, diag));
-    for(int j = 0; j < get_matrix_width(matrix); j++) {
-      value = get_matrix(matrix, diag, j) * diagInverse;
-      set_matrix(matrix, diag, j, value);
+    diagInverse = multiplicative_inverse(get_matrix(gauss, diag, diag));
+    for(int j = 0; j < get_matrix_width(gauss); j++) {
+      value = get_matrix(gauss, diag, j) * diagInverse;
+      set_matrix(gauss, diag, j, value);
     }
 
+
     /* Substract current row to all other rows */
-    for(int i = 0; i < get_matrix_height(matrix); i++) {
+    for(int i = 0; i < get_matrix_height(gauss); i++) {
       /* Skip diagonal row */
       if(i != diag) {
         /* Iterate over all row and substract diagonal value */
-        for(int j = 0; j < get_matrix_width(matrix); j++) {
-          value = get_matrix(matrix, i, j) - get_matrix(matrix, diag, j) * get_matrix(matrix, i, diag);
-          set_matrix(matrix, i, j, value);
+        int factor = get_matrix(gauss, i, diag);
+        for(int j = 0; j < get_matrix_width(gauss); j++) {
+          value = get_matrix(gauss, i, j) - get_matrix(gauss, diag, j) * factor;
+          set_matrix(gauss, i, j, value);
         }
       }
     }
   }
 
-  return 1;
+  return gauss;
 }
 
 
