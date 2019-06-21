@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "../utils/matrix/matrix.h"
 #include "../utils/matrixArray/matrixArray.h"
@@ -26,8 +27,14 @@ int main(void) {
   printf("Mat Rw is:\n");
   print_matrix(output.remainder);
   print_matrix_array(output.shares, "Sh");
+  printf("Shares Idx: [");
+  for(int i = 0; i < 4; i++) {
+    printf("%d ", output.sharesIdx[i]);
+  }
+  printf("]\n");
 
   free_matrix_array(output.shares);
+  free(output.sharesIdx);
   free_matrix(output.remainder);
 
   return 0;

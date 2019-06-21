@@ -13,13 +13,14 @@ static matrix_array_t computeVectorsV(const matrix_t matA, const matrix_array_t 
 static matrix_array_t computeMatricesG(const matrix_t matR, const matrix_array_t vArray, int k, int n);
 static int getGFromR(const matrix_t matR, int k, int i, int j, int t);
 static matrix_array_t computeShares(const matrix_array_t vArray, const matrix_array_t gArray);
+static int * build_shares_idx(int n);
 
 
 
 struct encrypt_output encrypt(const matrix_t image, const matrix_t watermark, int k, int n) {
   matrix_t matA = NULL, doubleS = NULL, matR = NULL, matRw = NULL;
   matrix_array_t xArray = NULL, vArray = NULL, gArray = NULL, sharesArray = NULL;
-  struct encrypt_output output = {NULL, NULL};
+  struct encrypt_output output = {NULL, NULL, NULL};
 
   /* Build matrix A */
   matA = buildMatrixA(get_matrix_height(image), k);
@@ -86,6 +87,7 @@ struct encrypt_output encrypt(const matrix_t image, const matrix_t watermark, in
 
   /* Fill output structure */
   output.shares = sharesArray;
+  output.sharesIdx = build_shares_idx(n);
   output.remainder = matRw;
 
   out:
@@ -252,4 +254,17 @@ static matrix_array_t computeShares(const matrix_array_t vArray, const matrix_ar
   }
 
   return sharesArray;
+}
+
+static int * build_shares_idx(int n) {
+  int * array = (int *) malloc(n * sizeof(int));
+  if(array == NULL) {
+    return NULL;
+  }
+
+  for(int i = 0; i < n; i++) {
+    array[i] = i + 1;
+  }
+
+  return array;
 }

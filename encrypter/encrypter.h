@@ -6,6 +6,7 @@
 
 struct encrypt_output {
   matrix_array_t shares;
+  int *sharesIdx;
   matrix_t remainder;
 };
 
