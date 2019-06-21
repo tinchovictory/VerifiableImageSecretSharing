@@ -3,6 +3,7 @@
 #include <math.h>
 
 #include "encrypter.h"
+#include "../utils/random/random.h"
 
 #define MODULUS 251
 
@@ -14,6 +15,7 @@ static matrix_array_t computeMatricesG(const matrix_t matR, const matrix_array_t
 static int getGFromR(const matrix_t matR, int k, int i, int j, int t);
 static matrix_array_t computeShares(const matrix_array_t vArray, const matrix_array_t gArray);
 static int * build_shares_idx(int n);
+static int has_value(int *arr, int size, int value);
 
 
 
@@ -134,26 +136,48 @@ static matrix_t buildMatrixA(int m, int k) {
 
 static matrix_array_t buildVectorsX(int k, int n) {
   matrix_array_t xArray;
+  matrix_t matX;
+  int *set, rand;
+
+  /* Alloc set */
+  set = (int *) calloc(n, sizeof(int));
+  if(set == NULL) {
+    return NULL;
+  }
 
   /* Alloc array */
   xArray = new_matrix_array(n);
   if(xArray == NULL) {
+    free(set);
     return NULL;
   }
 
-  /* Set values to matrix */
-  add_matrix_array(xArray, new_matrix(k, 1), 0); // DEBUG
-  set_matrix(get_matrix_array_item(xArray, 0), 0, 0, 9); // DEBUG
-  set_matrix(get_matrix_array_item(xArray, 0), 1, 0, 5); // DEBUG
-  add_matrix_array(xArray, new_matrix(k, 1), 1); // DEBUG
-  set_matrix(get_matrix_array_item(xArray, 1), 0, 0, 4); // DEBUG
-  set_matrix(get_matrix_array_item(xArray, 1), 1, 0, 4); // DEBUG
-  add_matrix_array(xArray, new_matrix(k, 1), 2); // DEBUG
-  set_matrix(get_matrix_array_item(xArray, 2), 0, 0, 9); // DEBUG
-  set_matrix(get_matrix_array_item(xArray, 2), 1, 0, 8); // DEBUG
-  add_matrix_array(xArray, new_matrix(k, 1), 3); // DEBUG
-  set_matrix(get_matrix_array_item(xArray, 3), 0, 0, 3); // DEBUG
-  set_matrix(get_matrix_array_item(xArray, 3), 1, 0, 2); // DEBUG
+  /* Build all the matrix inside the array */
+  for(int p = 0; p < n; p++) {
+    /* Alloc matrix */
+    matX = new_matrix(k, 1);
+    if(matX == NULL) {
+      free(set);
+      free_matrix_array(xArray);
+      return NULL;
+    }
+
+    /* Get random value not in set */
+    do {
+      rand = next_char() % MODULUS;
+    } while(has_value(set, n, rand));
+    set[p] = rand;
+
+    /* Fill matrix */
+    for(int i = 0; i < k; i++) {
+      set_matrix(matX, i, 0, (int) pow(rand, i));
+    }
+
+    /* Add matrix to the array */
+    add_matrix_array(xArray, matX, p);
+  }
+
+  free(set);
 
   return xArray;
 }
@@ -267,4 +291,19 @@ static int * build_shares_idx(int n) {
   }
 
   return array;
+}
+
+
+static int has_value(int *arr, int size, int value) {
+  if(arr == NULL) {
+    return 0;
+  }
+
+  for(int i = 0; i < size; i++) {
+    if(arr[i] == value) {
+      return 1;
+    }
+  }
+
+  return 0;
 }

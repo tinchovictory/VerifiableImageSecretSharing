@@ -47,7 +47,8 @@ add_executable(encrypter
                 encrypter/encrypter.c
                 utils/matrix/matrix.c
                 utils/multiplicativeInverse/multiplicativeInverse.c
-                utils/matrixArray/matrixArray.c)
+                utils/matrixArray/matrixArray.c
+                utils/random/random.c)
 
 add_executable(decrypter
                 decrypter/testDecrypter.c
@@ -64,4 +65,5 @@ add_executable(encrypterDecrypter
                 utils/matrix/matrix.c
                 utils/multiplicativeInverse/multiplicativeInverse.c
                 utils/matrixArray/matrixArray.c
-                utils/gaussElimination/gaussElimination.c)
+                utils/gaussElimination/gaussElimination.c
+                utils/random/random.c)

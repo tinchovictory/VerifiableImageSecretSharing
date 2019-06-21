@@ -3,6 +3,7 @@
 
 #include "utils/matrix/matrix.h"
 #include "utils/matrixArray/matrixArray.h"
+#include "utils/random/random.h"
 #include "encrypter/encrypter.h"
 #include "decrypter/decrypter.h"
 
@@ -11,6 +12,8 @@ static matrix_t readWatermark();
 
 int main(void) {
   matrix_t image, watermark;
+
+  set_seed(10);
 
   image = readImage();
   watermark = readWatermark();
