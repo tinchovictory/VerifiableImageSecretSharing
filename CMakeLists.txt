@@ -54,4 +54,5 @@ add_executable(decrypter
                 decrypter/decrypter.c
                 utils/matrix/matrix.c
                 utils/multiplicativeInverse/multiplicativeInverse.c
-                utils/matrixArray/matrixArray.c)
+                utils/matrixArray/matrixArray.c
+                utils/gaussElimination/gaussElimination.c)
