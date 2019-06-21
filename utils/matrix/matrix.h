@@ -101,6 +101,12 @@ int get_matrix_height(const matrix_t matrix);
 int get_matrix_width(const matrix_t matrix);
 
 /*
+ * Check if both matrix are equal
+ * Return 0 on false
+ */
+int are_matrices_equal(const matrix_t matrixA, const matrix_t matrixB);
+
+/*
  * Print matrix
  */
 void print_matrix(const matrix_t matrix);

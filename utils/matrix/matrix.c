@@ -517,6 +517,33 @@ void print_matrix(const matrix_t matrix) {
 }
 
 
+/*
+ * Check if both matrix are equal
+ * Return 0 on false
+ */
+int are_matrices_equal(const matrix_t matrixA, const matrix_t matrixB) {
+  if(matrixA == NULL || matrixB == NULL) {
+    return 0;
+  }
+
+  if(matrixA->height != matrixB->height || matrixA->width != matrixB->width) {
+    return 0;
+  }
+
+  for(int i = 0; i < matrixA->height; i++) {
+    for(int j = 0; j < matrixA->width; j++) {
+      if(matrixA->matrix[i][j] != matrixB->matrix[i][j]) {
+        return 0;
+      }
+    }
+  }
+  
+  return 1;
+}
+
+
+
+
 
 /* Helper functions */
 
