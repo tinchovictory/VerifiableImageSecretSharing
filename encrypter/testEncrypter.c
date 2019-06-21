@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-#include "utils/matrix/matrix.h"
-#include "encrypter/encrypter.h"
+#include "../utils/matrix/matrix.h"
+#include "encrypter.h"
 
 static matrix_t readImage();
 static matrix_t readWatermark();
