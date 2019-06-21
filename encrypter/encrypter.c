@@ -3,23 +3,25 @@
 #include <math.h>
 
 #include "encrypter.h"
+#include "../utils/matrixArray/matrixArray.h"
 
 #define MODULUS 251
 
 /* Helper functions declarations */
 static matrix_t buildMatrixA(int m, int k);
-static matrix_t* buildVectorsX(int k, int n);
-static matrix_t* computeVectorsV(const matrix_t matA, const matrix_t *xArray, int length);
-static matrix_t* computeMatricesG(const matrix_t matR, const matrix_t *vArray, int k, int n);
+static matrix_array_t buildVectorsX(int k, int n);
+static matrix_array_t computeVectorsV(const matrix_t matA, const matrix_array_t xArray);
+static matrix_array_t computeMatricesG(const matrix_t matR, const matrix_array_t vArray, int k, int n);
 static int getGFromR(const matrix_t matR, int k, int i, int j, int t);
-static matrix_t* computeShares(const matrix_t *vArray, const matrix_t *gArray, int length);
-static matrix_t* allocMatrixArray(int length);
-static void freeMatrixArray(matrix_t *array, int length);
+static matrix_array_t computeShares(const matrix_array_t vArray, const matrix_array_t gArray);
+// static matrix_t* allocMatrixArray(int length);
+// static void freeMatrixArray(matrix_t *array, int length);
 
 
 
 void encrypt(const matrix_t image, const matrix_t watermark, int k, int n) {
-  matrix_t matA = NULL, doubleS = NULL, matR = NULL, *xArray = NULL, *vArray = NULL, *gArray = NULL, matRw = NULL, *sharesArray = NULL;
+  matrix_t matA = NULL, doubleS = NULL, matR = NULL, matRw = NULL;
+  matrix_array_t xArray = NULL, vArray = NULL, gArray = NULL, sharesArray = NULL;
 
   /* Build matrix A */
   matA = buildMatrixA(get_matrix_height(image), k);
@@ -46,7 +48,7 @@ void encrypt(const matrix_t image, const matrix_t watermark, int k, int n) {
   }
 
   /* Compute vj */
-  vArray = computeVectorsV(matA, xArray, n);
+  vArray = computeVectorsV(matA, xArray);
   if(vArray == NULL) {
     goto out;
   }
@@ -66,7 +68,7 @@ void encrypt(const matrix_t image, const matrix_t watermark, int k, int n) {
   }
 
   /* Divide image shares */
-  sharesArray = computeShares(vArray, gArray, n);
+  sharesArray = computeShares(vArray, gArray);
   if(sharesArray == NULL) {
     goto out;
   }
@@ -78,30 +80,21 @@ void encrypt(const matrix_t image, const matrix_t watermark, int k, int n) {
   print_matrix(doubleS);
   printf("Mat R is:\n");
   print_matrix(matR);
-  for(int i = 0; i < n; i++) {
-    printf("Mat x%d is:\n", i);
-    print_matrix(xArray[i]);
-  }
-  for(int i = 0; i < n; i++) {
-    printf("Mat v%d is:\n", i);
-    print_matrix(vArray[i]);
-  }
-  for(int i = 0; i < n; i++) {
-    printf("Mat g%d is:\n", i);
-    print_matrix(gArray[i]);
-  }
+
+  print_matrix_array(xArray, "X");
+  print_matrix_array(vArray, "V");
+  print_matrix_array(gArray, "G");
+
   printf("Mat Rw is:\n");
   print_matrix(matRw);
-  for(int i = 0; i < n; i++) {
-    printf("Mat Sh%d is:\n", i);
-    print_matrix(sharesArray[i]);
-  }
+
+  print_matrix_array(sharesArray, "Sh");
 
   out:
-  freeMatrixArray(xArray, n);
-  freeMatrixArray(vArray, n);
-  freeMatrixArray(gArray, n);
-  freeMatrixArray(sharesArray, n);
+  free_matrix_array(xArray);
+  free_matrix_array(vArray);
+  free_matrix_array(gArray);
+  free_matrix_array(sharesArray);
   free_matrix(matA);
   free_matrix(doubleS);
   free_matrix(matR);
@@ -139,60 +132,64 @@ static matrix_t buildMatrixA(int m, int k) {
   return matrix;
 }
 
-static matrix_t* buildVectorsX(int k, int n) {
-  matrix_t *vectorsArray;
+static matrix_array_t buildVectorsX(int k, int n) {
+  matrix_array_t xArray;
 
   /* Alloc array */
-  vectorsArray = allocMatrixArray(n);
-  if(vectorsArray == NULL) {
+  xArray = new_matrix_array(n);
+  if(xArray == NULL) {
     return NULL;
   }
 
   /* Set values to matrix */
-  vectorsArray[0] = new_matrix(k, 1); // DEBUG
-  set_matrix(vectorsArray[0], 0, 0, 9); // DEBUG
-  set_matrix(vectorsArray[0], 1, 0, 5); // DEBUG
-  vectorsArray[1] = new_matrix(k, 1); // DEBUG
-  set_matrix(vectorsArray[1], 0, 0, 4); // DEBUG
-  set_matrix(vectorsArray[1], 1, 0, 4); // DEBUG
-  vectorsArray[2] = new_matrix(k, 1); // DEBUG
-  set_matrix(vectorsArray[2], 0, 0, 9); // DEBUG
-  set_matrix(vectorsArray[2], 1, 0, 8); // DEBUG
-  vectorsArray[3] = new_matrix(k, 1); // DEBUG
-  set_matrix(vectorsArray[3], 0, 0, 3); // DEBUG
-  set_matrix(vectorsArray[3], 1, 0, 2); // DEBUG
+  add_matrix_array(xArray, new_matrix(k, 1), 0); // DEBUG
+  set_matrix(get_matrix_array_item(xArray, 0), 0, 0, 9); // DEBUG
+  set_matrix(get_matrix_array_item(xArray, 0), 1, 0, 5); // DEBUG
+  add_matrix_array(xArray, new_matrix(k, 1), 1); // DEBUG
+  set_matrix(get_matrix_array_item(xArray, 1), 0, 0, 4); // DEBUG
+  set_matrix(get_matrix_array_item(xArray, 1), 1, 0, 4); // DEBUG
+  add_matrix_array(xArray, new_matrix(k, 1), 2); // DEBUG
+  set_matrix(get_matrix_array_item(xArray, 2), 0, 0, 9); // DEBUG
+  set_matrix(get_matrix_array_item(xArray, 2), 1, 0, 8); // DEBUG
+  add_matrix_array(xArray, new_matrix(k, 1), 3); // DEBUG
+  set_matrix(get_matrix_array_item(xArray, 3), 0, 0, 3); // DEBUG
+  set_matrix(get_matrix_array_item(xArray, 3), 1, 0, 2); // DEBUG
 
-  return vectorsArray;
+  return xArray;
 }
 
-static matrix_t* computeVectorsV(const matrix_t matA, const matrix_t *xArray, int length) {
-  matrix_t *vArray;
+static matrix_array_t computeVectorsV(const matrix_t matA, const matrix_array_t xArray) {
+  matrix_array_t vArray;
+  matrix_t vMatrix;
 
   /* Alloc array */
-  vArray = allocMatrixArray(length);
+  vArray = new_matrix_array(get_matrix_array_size(xArray));
   if(vArray == NULL) {
     return NULL;
   }
 
   /* Do multiplications */
-  for(int i = 0; i < length; i++) {
-    vArray[i] = multiply_matrix(matA, xArray[i]);
-    if(vArray[i] == NULL) {
-      freeMatrixArray(vArray, length);
+  for(int i = 0; i < get_matrix_array_size(xArray); i++) {
+    vMatrix = multiply_matrix(matA, get_matrix_array_item(xArray, i));
+    if(vMatrix == NULL) {
+      free_matrix_array(vArray);
       return NULL;
     }
+
+    add_matrix_array(vArray, vMatrix, i);
   }
 
   return vArray;
 }
 
 
-static matrix_t* computeMatricesG(const matrix_t matR, const matrix_t *vArray, int k, int n) {
-  matrix_t *gArray;
+static matrix_array_t computeMatricesG(const matrix_t matR, const matrix_array_t vArray, int k, int n) {
+  matrix_array_t gArray;
+  matrix_t gMatrix;
   int g;
 
   /* Alloc array */
-  gArray = allocMatrixArray(n);
+  gArray = new_matrix_array(n);
   if(gArray == NULL) {
     return NULL;
   }
@@ -200,18 +197,20 @@ static matrix_t* computeMatricesG(const matrix_t matR, const matrix_t *vArray, i
   /* Build matrices G */
   for(int j = 0; j < n; j++) {
     /* Building Gj */
-    gArray[j] = new_matrix(get_matrix_height(matR), (int) ceil((double) get_matrix_width(matR) / k));
-    if(gArray[j] == NULL) {
-      freeMatrixArray(gArray, n);
+    gMatrix = new_matrix(get_matrix_height(matR), (int) ceil((double) get_matrix_width(matR) / k));
+    if(gMatrix == NULL) {
+      free_matrix_array(gArray);
       return NULL;
     }
 
-    for(int i = 0; i < get_matrix_height(gArray[j]); i++) {
+    add_matrix_array(gArray, gMatrix, j);
+
+    for(int i = 0; i < get_matrix_height(gMatrix); i++) {
       /* Iterating over the matrix height */
-      for(int t = 0; t < get_matrix_width(gArray[j]); t++) {
+      for(int t = 0; t < get_matrix_width(gMatrix); t++) {
         /* Iterating over the matrix width */
         g = getGFromR(matR, k, i, j, t);
-        set_matrix(gArray[j], i, t, g);
+        set_matrix(gMatrix, i, t, g);
       }
     }
   }
@@ -231,40 +230,46 @@ static int getGFromR(const matrix_t matR, int k, int i, int j, int t) {
 }
 
 
-static matrix_t* computeShares(const matrix_t *vArray, const matrix_t *gArray, int length) {
-  matrix_t *sharesArray;
+static matrix_array_t computeShares(const matrix_array_t vArray, const matrix_array_t gArray) {
+  matrix_array_t sharesArray;
+  matrix_t share, vMatrix, gMatrix;
 
   /* Alloc array */
-  sharesArray = allocMatrixArray(length);
+  sharesArray = new_matrix_array(get_matrix_array_size(gArray));
   if(sharesArray == NULL) {
     return NULL;
   }
 
-  for(int i = 0; i < length; i++) {
-    sharesArray[i] = concatenate_matrix(vArray[i], gArray[i]);
-    if(sharesArray[i] == NULL) {
-      freeMatrixArray(sharesArray, length);
+  for(int i = 0; i < get_matrix_array_size(sharesArray); i++) {
+    vMatrix = get_matrix_array_item(vArray, i);
+    gMatrix = get_matrix_array_item(gArray, i);
+    share = concatenate_matrix(vMatrix, gMatrix);
+
+    if(share == NULL) {
+      free_matrix_array(sharesArray);
       return NULL;
     }
+
+    add_matrix_array(sharesArray, share, i);
   }
 
   return sharesArray;
 }
 
 
-static matrix_t* allocMatrixArray(int length) {
-  matrix_t *array = NULL;
-  array = calloc(length, sizeof(matrix_t));
-  return array;
-}
+// static matrix_t* allocMatrixArray(int length) {
+//   matrix_t *array = NULL;
+//   array = calloc(length, sizeof(matrix_t));
+//   return array;
+// }
 
-static void freeMatrixArray(matrix_t *array, int length) {
-  if(array == NULL) {
-    return;
-  }
+// static void freeMatrixArray(matrix_t *array, int length) {
+//   if(array == NULL) {
+//     return;
+//   }
 
-  for(int i = 0; i < length; i++) {
-    free_matrix(array[i]);
-  }
-  free(array);
-}
+//   for(int i = 0; i < length; i++) {
+//     free_matrix(array[i]);
+//   }
+//   free(array);
+// }

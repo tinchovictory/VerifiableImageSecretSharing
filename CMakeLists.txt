@@ -40,4 +40,5 @@ add_executable(encrypter
                 main.c
                 encrypter/encrypter.c
                 utils/matrix/matrix.c
-                utils/multiplicativeInverse/multiplicativeInverse.c)
+                utils/multiplicativeInverse/multiplicativeInverse.c
+                utils/matrixArray/matrixArray.c)
