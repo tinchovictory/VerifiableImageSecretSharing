@@ -37,8 +37,15 @@ add_executable(test
                 utils/multiplicativeInverse/multiplicativeInverse.c)
 
 add_executable(encrypter
-                main.c
+                encrypter/testEncrypter.c
                 encrypter/encrypter.c
+                utils/matrix/matrix.c
+                utils/multiplicativeInverse/multiplicativeInverse.c
+                utils/matrixArray/matrixArray.c)
+
+add_executable(decrypter
+                decrypter/testDecrypter.c
+                decrypter/decrypter.c
                 utils/matrix/matrix.c
                 utils/multiplicativeInverse/multiplicativeInverse.c
                 utils/matrixArray/matrixArray.c)
