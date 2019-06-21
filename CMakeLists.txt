@@ -31,8 +31,14 @@ endif()
 set(CMAKE_C_FLAGS, "${CMAKE_C_FLAGS} -pthread -pedantic -pedantic-errors -Wall -Wextra -Werror -Wno-unused-parameter -D_POSIX_C_SOURCE=200112L")
 
 
-add_executable(test
+add_executable(testMatrix
                 utils/matrix/testMatrix.c
+                utils/matrix/matrix.c
+                utils/multiplicativeInverse/multiplicativeInverse.c)
+
+add_executable(testGaussElimination
+                utils/gaussElimination/testGaussElimination.c
+                utils/gaussElimination/gaussElimination.c
                 utils/matrix/matrix.c
                 utils/multiplicativeInverse/multiplicativeInverse.c)
 
