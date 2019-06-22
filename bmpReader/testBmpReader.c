@@ -20,5 +20,13 @@ int main(void) {
 
   close_image(image);
 
+  image = new_8bit_image("buildImage.bmp", 100, 200);
+
+  for(int i = 0; i < 200; i++) {
+    for(int j = 0; j < 100; j++) {
+      set_image_pixel(image, i, i * 100 + j);
+    }
+  }
+
   return 0;
 }

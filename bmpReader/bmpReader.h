@@ -9,6 +9,11 @@ typedef struct image * image_t;
 image_t open_image(const char * filename);
 
 /*
+ * Build new 8 bits image
+ */
+image_t new_8bit_image(const char * filename, unsigned int width, unsigned int height);
+
+/*
  * Close image
  */
 void close_image(image_t image);
