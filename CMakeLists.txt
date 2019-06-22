@@ -69,3 +69,7 @@ add_executable(encrypterDecrypter
                 utils/matrixArray/matrixArray.c
                 utils/gaussElimination/gaussElimination.c
                 utils/random/random.c)
+
+add_executable(bmpReader
+                bmpReader/testBmpReader.c
+                bmpReader/bmpReader.c)
