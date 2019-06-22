@@ -73,3 +73,7 @@ add_executable(encrypterDecrypter
 add_executable(bmpReader
                 bmpReader/testBmpReader.c
                 bmpReader/bmpReader.c)
+
+add_executable(stenography
+                stenography/testStenography.c
+                stenography/stenography.c)
