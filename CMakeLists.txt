@@ -61,7 +61,7 @@ add_executable(decrypter
                 utils/gaussElimination/gaussElimination.c)
 
 add_executable(encrypterDecrypter
-                testEncrypterDecrypter.c
+                tests/testEncrypterDecrypter.c
                 encrypter/encrypter.c
                 decrypter/decrypter.c
                 utils/matrix/matrix.c
@@ -79,7 +79,7 @@ add_executable(stenography
                 stenography/stenography.c)
 
 add_executable(decryptImage
-                testDecrypt.c
+                tests/testDecrypt.c
                 decrypter/decrypter.c
                 utils/matrix/matrix.c
                 utils/multiplicativeInverse/multiplicativeInverse.c
@@ -90,7 +90,7 @@ add_executable(decryptImage
                 utils/random/random.c)
 
 add_executable(encryptImage
-                testEncrypt.c
+                tests/testEncrypt.c
                 encrypter/encrypter.c
                 utils/matrix/matrix.c
                 utils/multiplicativeInverse/multiplicativeInverse.c
