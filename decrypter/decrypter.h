@@ -15,4 +15,9 @@ struct decrypt_output {
  */
 struct decrypt_output decrypt(const matrix_array_t shares, const int sharesIdx[], const matrix_t remainder);
 
+/*
+ * Free decrypt_output
+ */
+void free_decrypt_output(struct decrypt_output output);
+
 #endif

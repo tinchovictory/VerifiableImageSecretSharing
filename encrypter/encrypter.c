@@ -104,6 +104,16 @@ struct encrypt_output encrypt(const matrix_t image, const matrix_t watermark, in
   return output;
 }
 
+/*
+ * Free encrypt_output
+ */
+void free_encrypt_output(struct encrypt_output output) {
+  free_matrix_array(output.shares);
+  free_matrix(output.remainder);
+  free(output.sharesIdx);
+}
+
+
 
 
 /* Helper functions */

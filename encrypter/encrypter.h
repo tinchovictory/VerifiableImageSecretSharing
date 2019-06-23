@@ -15,4 +15,9 @@ struct encrypt_output {
  */
 struct encrypt_output encrypt(const matrix_t image, const matrix_t watermark, int k, int n);
 
+/*
+ * Free encrypt_output
+ */
+void free_encrypt_output(struct encrypt_output output);
+
 #endif

@@ -7,30 +7,30 @@
 #include "utils/matrix/matrix.h"
 #include "utils/matrixArray/matrixArray.h"
 
-#define K 2
-#define N 4
-#define BITS_PER_PIXEL 2
+#define K 4
+#define N 8
+#define BITS_PER_PIXEL 1
 
 
 int main(void) {
   /* Open 4 shares images */
-  image_t share1 = open_image("grupo8/2-4/share1.bmp");
-  image_t share2 = open_image("grupo8/2-4/share2.bmp");
-  // image_t share3 = open_image("grupo8/2-4/share3.bmp");
-  // image_t share4 = open_image("grupo8/2-4/share4.bmp");
+  image_t share1 = open_image("shares/share1.bmp");
+  image_t share2 = open_image("shares/share2.bmp");
+  image_t share3 = open_image("shares/share3.bmp");
+  image_t share4 = open_image("shares/share4.bmp");
 
-  // image_t sharesImg[] = {share1, share2, share3, share4};
-  image_t sharesImg[] = {share1, share2};
+  image_t sharesImg[] = {share1, share2, share3, share4};
+  // image_t sharesImg[] = {share1, share2};
 
   /* Get the share idx */
   int shareIdx[K];
   shareIdx[0] = get_image_reserved(share1);
   shareIdx[1] = get_image_reserved(share2);
-  // shareIdx[2] = get_image_reserved(share3);
-  // shareIdx[3] = get_image_reserved(share4);
+  shareIdx[2] = get_image_reserved(share3);
+  shareIdx[3] = get_image_reserved(share4);
 
   /* Open remainder images */ 
-  image_t rw = open_image("grupo8/2-4/RW.bmp");
+  image_t rw = open_image("RW.bmp");
 
   /* Build shares array */
   matrix_array_t sharesArray = new_matrix_array(K);
@@ -107,8 +107,8 @@ int main(void) {
   free_matrix_array(sharesArray);
   close_image(share1);
   close_image(share2);
-  // close_image(share3);
-  // close_image(share4);
+  close_image(share3);
+  close_image(share4);
   close_image(rw);
 
   close_image(secret);

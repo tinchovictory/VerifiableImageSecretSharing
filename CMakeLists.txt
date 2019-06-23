@@ -28,7 +28,7 @@ if(CMAKE_C_COMPILER_ID MATCHES "Clang")
     endif()
 endif()
 
-set(CMAKE_C_FLAGS, "${CMAKE_C_FLAGS} -pthread -pedantic -pedantic-errors -Wall -Wextra -Werror -Wno-unused-parameter -D_POSIX_C_SOURCE=200112L")
+set(CMAKE_C_FLAGS, "${CMAKE_C_FLAGS} -pthread -pedantic -pedantic-errors -Wall -Wextra -Werror -Wno-unused-parameter -D_POSIX_C_SOURCE=200112L -D_BSD_SOURCE")
 
 
 add_executable(testMatrix
@@ -99,3 +99,16 @@ add_executable(encryptImage
                 bmpReader/bmpReader.c
                 stenography/stenography.c
                 utils/random/random.c)
+
+add_executable(main
+                main.c
+                encrypter/encrypter.c
+                decrypter/decrypter.c
+                utils/matrix/matrix.c
+                utils/multiplicativeInverse/multiplicativeInverse.c
+                utils/matrixArray/matrixArray.c
+                utils/gaussElimination/gaussElimination.c
+                bmpReader/bmpReader.c
+                stenography/stenography.c
+                utils/random/random.c
+                paramParser/paramParser.c)

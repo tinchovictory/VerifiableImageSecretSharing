@@ -17,20 +17,20 @@ int main(void) {
   set_seed(10);
 
   /* Open 4 shares images */
-  image_t share1 = open_image("enc/share1.bmp");
-  image_t share2 = open_image("enc/share2.bmp");
-  image_t share3 = open_image("enc/share3.bmp");
-  image_t share4 = open_image("enc/share4.bmp");
-  image_t share5 = open_image("enc/share5.bmp");
-  image_t share6 = open_image("enc/share6.bmp");
-  image_t share7 = open_image("enc/share7.bmp");
-  image_t share8 = open_image("enc/share8.bmp");
+  image_t share1 = open_image("shares/share1.bmp");
+  image_t share2 = open_image("shares/share2.bmp");
+  image_t share3 = open_image("shares/share3.bmp");
+  image_t share4 = open_image("shares/share4.bmp");
+  image_t share5 = open_image("shares/share5.bmp");
+  image_t share6 = open_image("shares/share6.bmp");
+  image_t share7 = open_image("shares/share7.bmp");
+  image_t share8 = open_image("shares/share8.bmp");
 
   image_t sharesArray[] = {share1, share2, share3, share4, share5, share6, share7, share8};
   // image_t sharesArray[] = {share1, share2, share3, share4};
 
   /* Open remainder images */ 
-  image_t rw = new_8bit_image("enc/RW/RW.bmp", 280, 440);
+  image_t rw = new_8bit_image("RW.bmp", 280, 440);
 
   /* Create output images */
   image_t secret = open_image("secret.bmp");

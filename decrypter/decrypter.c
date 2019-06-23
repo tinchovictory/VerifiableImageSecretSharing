@@ -83,6 +83,14 @@ struct decrypt_output decrypt(const matrix_array_t shares, const int sharesIdx[]
   return output;
 }
 
+/*
+ * Free decrypt_output
+ */
+void free_decrypt_output(struct decrypt_output output) {
+  free_matrix(output.secret);
+  free_matrix(output.watermark);
+}
+
 
 
 /* Helper functions */
