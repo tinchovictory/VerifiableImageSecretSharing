@@ -77,3 +77,25 @@ add_executable(bmpReader
 add_executable(stenography
                 stenography/testStenography.c
                 stenography/stenography.c)
+
+add_executable(decryptImage
+                testDecrypt.c
+                decrypter/decrypter.c
+                utils/matrix/matrix.c
+                utils/multiplicativeInverse/multiplicativeInverse.c
+                utils/matrixArray/matrixArray.c
+                utils/gaussElimination/gaussElimination.c
+                bmpReader/bmpReader.c
+                stenography/stenography.c
+                utils/random/random.c)
+
+add_executable(encryptImage
+                testEncrypt.c
+                encrypter/encrypter.c
+                utils/matrix/matrix.c
+                utils/multiplicativeInverse/multiplicativeInverse.c
+                utils/matrixArray/matrixArray.c
+                utils/gaussElimination/gaussElimination.c
+                bmpReader/bmpReader.c
+                stenography/stenography.c
+                utils/random/random.c)
