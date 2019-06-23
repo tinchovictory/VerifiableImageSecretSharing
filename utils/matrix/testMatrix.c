@@ -156,7 +156,35 @@ int main(void) {
   print_matrix(projection);
 
   free_matrix(matrix);
+  free_matrix(projection);
 
+
+
+  // Test inverse
+  matrix = new_matrix(4, 4);
+  set_matrix(matrix, 0, 0, 230);
+  set_matrix(matrix, 0, 1, 5);
+  set_matrix(matrix, 0, 2, 42);
+  set_matrix(matrix, 0, 3, 75);
+  set_matrix(matrix, 1, 0, 5);
+  set_matrix(matrix, 1, 1, 200);
+  set_matrix(matrix, 1, 2, 78);
+  set_matrix(matrix, 1, 3, 51);
+  set_matrix(matrix, 2, 0, 42);
+  set_matrix(matrix, 2, 1, 78);
+  set_matrix(matrix, 2, 2, 84);
+  set_matrix(matrix, 2, 3, 183);
+  set_matrix(matrix, 3, 0, 75);
+  set_matrix(matrix, 3, 1, 51);
+  set_matrix(matrix, 3, 2, 183);
+  set_matrix(matrix, 3, 3, 182);
+
+  print_matrix(matrix);
+  inverse = inverse_matrix(matrix);
+  print_matrix(inverse);
+
+  free_matrix(matrix);
+  free_matrix(inverse);
 
   return 0;
 }

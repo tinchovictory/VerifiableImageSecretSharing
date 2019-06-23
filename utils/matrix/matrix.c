@@ -23,6 +23,7 @@ static matrix_t applyModulus(matrix_t matrix);
 
 
 
+
 /*
  * Init a new matrix of size width x length
  * If dimesions are invalid returns NULL
@@ -216,65 +217,33 @@ matrix_t multiply_matrix(const matrix_t matrixA, const matrix_t matrixB) {
  * Otherwise return the determinant of the matrix
  */
 int determinant_of_matrix(const matrix_t matrix) {
-  matrix_t mat;
-  int det = 1, total = 1, idx;
-
-  /* Clone matrix to avoid changeing it */
-  mat = clone_matrix(matrix);
-  if(mat == NULL) {
+  if(matrix == NULL) {
     return -1;
   }
 
-  /* Loop over the diagonal */
-  for(int i = 0; i < mat->width; i++) {
-    idx = i;
+  int det = 0;
 
-    /* Find the non-zero index */
-    while(idx < mat->height && mat->matrix[idx][i] == 0) {
-      idx++;
-    }
-
-
-    /* The determinant of the matrix is 0 */
-    if(idx == mat->height) {
-      free_matrix(mat);
-      return 0;
-    }
-
-    /* Swap row */
-    if(idx != i) {
-      for(int j = 0; j < mat->width; j++) {
-        int aux = mat->matrix[i][j];
-        mat->matrix[i][j] = mat->matrix[idx][j];
-        mat->matrix[idx][j] = aux;
-      }
-      /* Determinant sign changes when we shift rows */
-      det *= (int) pow(-1, idx - i);
-    }
-
-    /* Loop over the rows below the diagonal */
-    for(int j = i + 1; j < mat->height; j++) {
-      int num = mat->matrix[j][i];
-
-      /* Loop over the current row items */
-      for(int k = 0; k < mat->width; k++) {
-        /* Make the diagonal element and the next row equal */
-        mat->matrix[j][k] = (mat->matrix[i][i] * mat->matrix[j][k]) - (num * mat->matrix[i][k]);
-      }
-      /* Det(kA) = k Det(A) */
-      total *= mat->matrix[i][i];
-    }
-
-  }
-  
-  /* Multiply the diagonal elements */
-  for(int i = 0; i < mat->width; i++) {
-    det *= mat->matrix[i][i];
+  /* Base case */
+  if(matrix->width == 1) {
+    return matrix->matrix[0][0];
   }
 
-  free_matrix(mat);
+  int sign = 1;
 
-  return det/total;
+  /* Alloc cofactor matrix only once */
+  matrix_t cofactor = new_matrix(matrix->height - 1, matrix->width - 1);
+  if(cofactor == NULL) {
+    return 0;
+  }
+
+  for(int j = 0; j < matrix->width; j++) {
+    getCofactor(matrix, 0, j, cofactor);
+    det += sign * matrix->matrix[0][j] * determinant_of_matrix(cofactor);
+    det %= MODULUS;
+    sign = -sign;
+  }
+
+  return det;
 }
 
 
@@ -359,17 +328,21 @@ matrix_t project_matrix(const matrix_t matrix) {
     goto out;
   }
 
+  // printf("transposed\n");
+
   /* Get (A' x A) */
   multipied = multiply_matrix(transpose, matrix);
   if(multipied == NULL) {
     goto out;
   }
+  // printf("multiplied\n");
 
   /* Get (A' x A)^-1 */
   inverse = inverse_matrix(multipied);
   if(inverse == NULL) {
     goto out;
   }
+  // printf("inversed\n");
 
   free_matrix(multipied);
 
@@ -377,9 +350,11 @@ matrix_t project_matrix(const matrix_t matrix) {
   if(multipied == NULL) {
     goto out;
   }
+  // printf("multiplied\n");
 
   projection = multiply_matrix(multipied, transpose);
 
+  // printf("projected\n");
   /* Free up all matrix */
   out:
   free_matrix(transpose);
