@@ -6,22 +6,6 @@
 
 #include "paramParser.h"
 
-// int main(int argc, char *argv[]) {
-//   struct params params = parse_params(argc, argv);
-//   if(params.action == ACTION_ERROR) {
-//     return 1;
-//   }
-
-//   printf("action: %d\n", params.action);
-//   printf("secret: %s\n", params.secretImage);
-//   printf("watermark: %s\n", params.watermark);
-//   printf("k: %d\n", params.k);
-//   printf("n: %d\n", params.n);
-//   printf("dir: %s\n", params.dir);
-
-//   free_params(params);
-// }
-
 
 static char * copy_str(const char *string);
 static void print_usage();
@@ -31,12 +15,13 @@ static void print_usage();
  * Parse the parameters
  */
 struct params parse_params(int argc, char *argv[]) {
-  struct params params = {0, NULL, NULL, 0, 0, NULL};
+  struct params params = {0, NULL, NULL, 0, 0, NULL, copy_str("RW.bmp")};
   int opt;
 
   /* Define long options */
   struct option long_options[] = {
     {"dir", required_argument, NULL, 0},
+    {"rw", required_argument, NULL, 1},
     {NULL, 0, NULL, 0}
   };
 
@@ -79,6 +64,9 @@ struct params parse_params(int argc, char *argv[]) {
       case 0:
         params.dir = copy_str(optarg);
         break;
+      case 1:
+        params.rwFile = copy_str(optarg);
+        break;
       case '?':
         /* Set action to -1 and return */
         printf("[ERROR]Invalid Paramaters\n");
@@ -106,6 +94,7 @@ void free_params(struct params params) {
   free(params.secretImage);
   free(params.watermark);
   free(params.dir);
+  free(params.rwFile);
 }
 
 
@@ -127,5 +116,5 @@ static char * copy_str(const char *string) {
 }
 
 static void print_usage() {
-  printf("usage [-d or -r] [-s <secretImage>] [-m <watermark>] [-k <value>] [-n <value>] [-dir <directory>]\n");
+  printf("usage [-d or -r] [-s <secretImage>] [-m <watermark>] [-k <value>] [-n <value>] [-dir <directory>] [-rw <rw file>]\n");
 }

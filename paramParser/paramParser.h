@@ -12,6 +12,7 @@ struct params {
   int k;
   int n;
   char *dir;
+  char *rwFile;
 };
 
 /* 

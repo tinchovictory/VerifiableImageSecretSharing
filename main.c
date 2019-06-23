@@ -96,7 +96,7 @@ static int encrypt_image(struct params params) {
   }
   
   /* Create remainder image */ 
-  rw = new_8bit_image("RW.bmp", get_image_width(sharesArray[0]), get_image_height(sharesArray[0]));
+  rw = new_8bit_image(params.rwFile, get_image_width(sharesArray[0]), get_image_height(sharesArray[0]));
   if(rw == NULL) {
     printf("[ERROR] Unable to create image RW\n");
     err = 1;
@@ -218,7 +218,7 @@ static int decrypt_image(struct params params) {
   }
 
   /* Open remainder images */ 
-  rw = open_image("RW.bmp");
+  rw = open_image(params.rwFile);
   if(rw == NULL) {
     printf("[ERROR] Unable to open image RW\n");
     goto err;
