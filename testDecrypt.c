@@ -7,30 +7,30 @@
 #include "utils/matrix/matrix.h"
 #include "utils/matrixArray/matrixArray.h"
 
-#define K 4
-#define N 8
-#define BITS_PER_PIXEL 1
+#define K 2
+#define N 4
+#define BITS_PER_PIXEL 2
 
 
 int main(void) {
   /* Open 4 shares images */
-  image_t share1 = open_image("enc/share1.bmp");
-  image_t share2 = open_image("enc/share2.bmp");
-  image_t share3 = open_image("enc/share3.bmp");
-  image_t share4 = open_image("enc/share4.bmp");
+  image_t share1 = open_image("grupo8/2-4/share1.bmp");
+  image_t share2 = open_image("grupo8/2-4/share2.bmp");
+  // image_t share3 = open_image("grupo8/2-4/share3.bmp");
+  // image_t share4 = open_image("grupo8/2-4/share4.bmp");
 
-  image_t sharesImg[] = {share1, share2, share3, share4};
-  // image_t sharesImg[] = {share1, share2};
+  // image_t sharesImg[] = {share1, share2, share3, share4};
+  image_t sharesImg[] = {share1, share2};
 
   /* Get the share idx */
   int shareIdx[K];
   shareIdx[0] = get_image_reserved(share1);
   shareIdx[1] = get_image_reserved(share2);
-  shareIdx[2] = get_image_reserved(share3);
-  shareIdx[3] = get_image_reserved(share4);
+  // shareIdx[2] = get_image_reserved(share3);
+  // shareIdx[3] = get_image_reserved(share4);
 
   /* Open remainder images */ 
-  image_t rw = open_image("enc/RW/RW.bmp");
+  image_t rw = open_image("grupo8/2-4/RW.bmp");
 
   /* Build shares array */
   matrix_array_t sharesArray = new_matrix_array(K);
@@ -42,8 +42,8 @@ int main(void) {
   matrix_t remainder = new_matrix(N, N);
 
   /* Create output images */
-  image_t secret = new_8bit_image("secretImage.bmp", 280, 440);
-  image_t watermark = new_8bit_image("watermark.bmp", 280, 440);
+  image_t secret = new_8bit_image("secretImage.bmp", get_image_width(rw), get_image_height(rw));
+  image_t watermark = new_8bit_image("watermark.bmp", get_image_width(rw), get_image_height(rw));
 
   /* Iterate over the image */
   int pixel = 0;
@@ -58,10 +58,12 @@ int main(void) {
           unsigned char pixelsArray[N];
           for(int p = 0; p < N; p++) {
             pixelsArray[p] = get_image_pixel(sharesImg[k], pixel + p);
+            // printf("pixel: %d\n", pixelsArray[p]);
           }
 
           /* Get the stenography */
           unsigned char hiddenValue = stenography_get(pixelsArray, N, BITS_PER_PIXEL);
+          // printf("hidden value: %d\n", hiddenValue);
 
           /* Set the hidden value in the current position of the matrix */
           matrix_t share = get_matrix_array_item(sharesArray, k);
@@ -105,8 +107,8 @@ int main(void) {
   free_matrix_array(sharesArray);
   close_image(share1);
   close_image(share2);
-  close_image(share3);
-  close_image(share4);
+  // close_image(share3);
+  // close_image(share4);
   close_image(rw);
 
   close_image(secret);
