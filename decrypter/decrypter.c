@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "decrypter.h"
 #include "../utils/gaussElimination/gaussElimination.h"
@@ -42,7 +43,7 @@ struct decrypt_output decrypt(const matrix_array_t shares, const int sharesIdx[]
     printf("failed mat g\n");
     goto out;
   }
-
+  
   /* Build remainder matrix R */
   matR = build_matrix_R(sharesIdx, arrayG);
   if(matR == NULL) {
@@ -184,7 +185,7 @@ static matrix_t build_matrix_R(const int sharesIdx[], const matrix_array_t array
   }
 
   /* Build equation matrix with the shares index */
-  matEq = new_matrix(get_matrix_array_size(arrayG), 3);
+  matEq = new_matrix(get_matrix_array_size(arrayG), get_matrix_array_size(arrayG) + 1);
   if(matEq == NULL) {
     free_matrix(matR);
     return NULL;
@@ -193,7 +194,9 @@ static matrix_t build_matrix_R(const int sharesIdx[], const matrix_array_t array
   /* Fill equation matrix with shares index */
   for(int i = 0; i < get_matrix_height(matEq); i++) {
     set_matrix(matEq, i, 0, 1);
-    set_matrix(matEq, i, 1, sharesIdx[i]);
+    for(int j = 1; j < get_matrix_width(matEq); j++) {
+      set_matrix(matEq, i, j, (int) pow(sharesIdx[i] + 1, j));
+    }
   }
 
   /* Iterate over the shares to fill R */
@@ -202,7 +205,7 @@ static matrix_t build_matrix_R(const int sharesIdx[], const matrix_array_t array
       /* Iterate over the shares array */
       for(int k = 0; k < get_matrix_array_size(arrayG); k++) {
         share = get_matrix_array_item(arrayG, k);
-        set_matrix(matEq, k, 2, get_matrix(share, i, j));
+        set_matrix(matEq, k, get_matrix_width(matEq) - 1, get_matrix(share, i, j));
       }
 
       /* Calculate gauss jordan elimination */
@@ -216,7 +219,7 @@ static matrix_t build_matrix_R(const int sharesIdx[], const matrix_array_t array
       /* Fill values to R */
       for(int k = 0; k < get_matrix_height(solvedEq); k++) {
         Rj = j * get_matrix_height(solvedEq) + k;
-        set_matrix(matR, i, Rj, get_matrix(solvedEq, k, 2));
+        set_matrix(matR, i, Rj, get_matrix(solvedEq, k, get_matrix_width(solvedEq) - 1));
       }
 
       free_matrix(solvedEq);
