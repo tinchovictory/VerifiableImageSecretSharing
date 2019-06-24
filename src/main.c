@@ -207,7 +207,7 @@ static int decrypt_image(struct params params) {
   }
 
   /* Get the share idxs */
-  shareIdx = malloc(params.k);
+  shareIdx = malloc(params.k * sizeof(int));
   if(shareIdx == NULL) {
     printf("%s[ERROR] Out of memory%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
     err = 1;
