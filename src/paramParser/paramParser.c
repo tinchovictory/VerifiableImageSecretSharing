@@ -67,12 +67,14 @@ struct params parse_params(int argc, char *argv[]) {
         params.dir = copy_str(optarg);
         break;
       case 1:
+	free(params.rwFile);
         params.rwFile = copy_str(optarg);
         break;
       case '?':
         /* Set action to -1 and return */
         printf("%s[ERROR]Invalid Paramaters%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
         print_usage();
+	free_params(params);
         params.action = -1;
         return params;
     }

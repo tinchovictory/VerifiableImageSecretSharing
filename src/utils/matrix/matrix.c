@@ -243,6 +243,8 @@ int determinant_of_matrix(const matrix_t matrix) {
     sign = -sign;
   }
 
+  free_matrix(cofactor);
+
   return det;
 }
 

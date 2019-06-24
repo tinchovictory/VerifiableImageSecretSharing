@@ -4,7 +4,7 @@ project(VerifiableImages C)
 
 
 
-set(CMAKE_C_FLAGS    "--std=c99 -pthread -pedantic -pedantic-errors -Wall -Wextra -Werror -Wno-unused-parameter -Wno-implicit-fallthrough -D_POSIX_C_SOURCE=200112L ")
+set(CMAKE_C_FLAGS    "--std=c99 -g -pthread -pedantic -pedantic-errors -Wall -Wextra -Werror -Wno-unused-parameter -Wno-implicit-fallthrough -D_POSIX_C_SOURCE=200112L ")
 
 set(CLANG_TIDY_CHECKS *
    -boost-*
@@ -28,7 +28,7 @@ if(CMAKE_C_COMPILER_ID MATCHES "Clang")
     endif()
 endif()
 
-set(CMAKE_C_FLAGS, "${CMAKE_C_FLAGS} -lm -pthread -pedantic -pedantic-errors -Wall -Wextra -Werror -Wno-unused-parameter -D_POSIX_C_SOURCE=200112L -D_BSD_SOURCE")
+set(CMAKE_C_FLAGS, "${CMAKE_C_FLAGS} -lm -g -pthread -pedantic -pedantic-errors -Wall -Wextra -Werror -Wno-unused-parameter -D_POSIX_C_SOURCE=200112L -D_BSD_SOURCE")
 
 
 add_executable(testMatrix EXCLUDE_FROM_ALL
