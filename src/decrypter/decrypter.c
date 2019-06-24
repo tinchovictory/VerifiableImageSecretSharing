@@ -22,14 +22,12 @@ struct decrypt_output decrypt(const matrix_array_t shares, const int sharesIdx[]
   /* Build matrix B */
   matB = build_matrix_B(shares);
   if(matB == NULL) {
-    printf("failed mat b\n");
     goto out;
   }
 
   /* Compute matrix double S */
   doubleS = project_matrix(matB);
   if(doubleS == NULL) {
-    printf("failed mat s\n");
     goto out;
   }
 
@@ -40,7 +38,6 @@ struct decrypt_output decrypt(const matrix_array_t shares, const int sharesIdx[]
   /* Build matrices G */
   arrayG = build_matrices_G(shares);
   if(arrayG == NULL) {
-    printf("failed mat g\n");
     goto out;
   }
   

@@ -39,21 +39,3 @@ int multiplicative_inverse(int x) {
 
   return (x0 + MODULUS) % MODULUS;
 }
-
-// int main(void) {
-//   int ans;
-
-//   for(int i = 0; i < 251; i++) {
-//     ans = multiplicative_inverse(i);
-//     if(!ans) {
-//       printf("no solution for %d\n", i);
-//     } else {
-//       printf("solution is %d -> %d\n", i, ans);
-//     }
-//   }
-
-
-//       printf("solution is %d -> %d\n", 530, multiplicative_inverse(530));
-
-//   return 0;
-// }

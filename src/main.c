@@ -15,6 +15,10 @@
 #include "utils/matrixArray/matrixArray.h"
 #include "utils/random/random.h"
 
+#define ANSI_COLOR_RED "\x1b[31m"
+#define ANSI_COLOR_GREEN "\x1b[32m"
+#define ANSI_COLOR_RESET "\x1b[0m"
+
 static int encrypt_image(struct params params);
 static int decrypt_image(struct params params);
 static image_t * shares_array(const char *directory, int amount);
@@ -33,10 +37,10 @@ int main(int argc, char *argv[]) {
 
   /* Do encryption or decryption */
   if(params.action == ACTION_ENCRYPT) {
-    printf("[INFO] Encryption started\n");
+    printf("%s[INFO] Encryption started%s\n", ANSI_COLOR_GREEN, ANSI_COLOR_RESET);
     err = encrypt_image(params);
   } else if(params.action == ACTION_DECRYPT) {
-    printf("[INFO] Decryption started\n");
+    printf("%s[INFO] Decryption started%s\n", ANSI_COLOR_GREEN, ANSI_COLOR_RESET);
     err = decrypt_image(params);
   }
 
@@ -47,7 +51,7 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
 
-  printf("[INFO] %s finished successfully\n", params.action == ACTION_ENCRYPT ? "Encryption" : "Decryptions");
+  printf("%s[INFO] %s finished successfully%s\n", ANSI_COLOR_GREEN, params.action == ACTION_ENCRYPT ? "Encryption" : "Decryptions", ANSI_COLOR_RESET);
   return EXIT_SUCCESS;
 }
 
@@ -73,7 +77,7 @@ static int encrypt_image(struct params params) {
   /* Open secret images */
   secret = open_image(params.secretImage);
   if(secret == NULL) {
-    printf("[ERROR] Unable to open secret image\n");
+    printf("%s[ERROR] Unable to open secret image%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
     err = 1;
     goto err;
   }
@@ -81,7 +85,7 @@ static int encrypt_image(struct params params) {
   /* Open watermark */
   watermark = open_image(params.watermark);
   if(watermark == NULL) {
-    printf("[ERROR] Unable to open watermark image\n");
+    printf("%s[ERROR] Unable to open watermark image\n%s", ANSI_COLOR_RED, ANSI_COLOR_RESET);
     err = 1;
     goto err;
   }
@@ -90,7 +94,7 @@ static int encrypt_image(struct params params) {
   matS = new_matrix(params.n, params.n);
   matW = new_matrix(params.n, params.n);
   if(matS == NULL || matW == NULL) {
-    printf("[ERROR] Out of memory\n");
+    printf("%s[ERROR] Out of memory%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
     err = 1;
     goto err;
   }
@@ -98,7 +102,7 @@ static int encrypt_image(struct params params) {
   /* Create remainder image */ 
   rw = new_8bit_image(params.rwFile, get_image_width(sharesArray[0]), get_image_height(sharesArray[0]));
   if(rw == NULL) {
-    printf("[ERROR] Unable to create image RW\n");
+    printf("%s[ERROR] Unable to create image RW%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
     err = 1;
     goto err;
   }
@@ -106,7 +110,7 @@ static int encrypt_image(struct params params) {
   /* Alloc pixels array */
   pixelsArray = malloc(params.n * sizeof(unsigned char));
   if(pixelsArray == NULL) {
-    printf("[ERROR] Out of memory\n");
+    printf("%s[ERROR] Out of memory%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
     err = 1;
     goto err;
   }
@@ -126,7 +130,7 @@ static int encrypt_image(struct params params) {
     /* Encrypt */
     struct encrypt_output output = encrypt(matS, matW, params.k, params.n);
     if(output.shares == NULL || output.remainder == NULL) {
-      printf("[ERROR] Unable to encrypt\n");
+      printf("%s[ERROR] Unable to encrypt%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
       free_encrypt_output(output);
       err = 1;
       goto err;
@@ -205,7 +209,7 @@ static int decrypt_image(struct params params) {
   /* Get the share idxs */
   shareIdx = malloc(params.k);
   if(shareIdx == NULL) {
-    printf("[ERROR] Out of memory\n");
+    printf("%s[ERROR] Out of memory%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
     err = 1;
     goto err;
   }
@@ -216,7 +220,7 @@ static int decrypt_image(struct params params) {
   /* Open remainder images */ 
   rw = open_image(params.rwFile);
   if(rw == NULL) {
-    printf("[ERROR] Unable to open image RW\n");
+    printf("%s[ERROR] Unable to open image RW%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
     err = 1;
     goto err;
   }
@@ -224,14 +228,14 @@ static int decrypt_image(struct params params) {
   /* Build matrix shares array */
   matSharesArray = new_matrix_array(params.k);
   if(matSharesArray == NULL) {
-    printf("[ERROR] Out of memory\n");
+    printf("%s[ERROR] Out of memory%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
     err = 1;
     goto err;
   }
   for(int i = 0; i < get_matrix_array_size(matSharesArray); i++) {
     share = new_matrix(params.n, params.n / params.k + 1);
     if(share == NULL) {
-      printf("[ERROR] Out of memory\n");
+      printf("%s[ERROR] Out of memory%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
       err = 1;
       goto err;
     }
@@ -241,7 +245,7 @@ static int decrypt_image(struct params params) {
   /* Build remainder matrix */
   remainder = new_matrix(params.n, params.n);
   if(remainder == NULL) {
-    printf("[ERROR] Out of memory\n");
+    printf("%s[ERROR] Out of memory%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
     err = 1;
     goto err;
   }
@@ -249,7 +253,7 @@ static int decrypt_image(struct params params) {
   /* Alloc pixels array */
   pixelsArray = malloc(params.n * sizeof(unsigned char));
   if(pixelsArray == NULL) {
-    printf("[ERROR] Out of memory\n");
+    printf("%s[ERROR] Out of memory%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
     err = 1;
     goto err;
   }
@@ -258,7 +262,7 @@ static int decrypt_image(struct params params) {
   secret = new_8bit_image(params.secretImage, get_image_width(rw), get_image_height(rw));
   watermark = new_8bit_image(params.watermark, get_image_width(rw), get_image_height(rw));
   if(secret == NULL || watermark == NULL) {
-    printf("[ERROR] Unable to create output images\n");
+    printf("%s[ERROR] Unable to create output images%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
     err = 1;
     goto err;
   }
@@ -348,7 +352,7 @@ static image_t * shares_array(const char *directory, int amount) {
   /* Open directory */
   dir = opendir(directory);
   if(dir == NULL) {
-    printf("[ERROR] Unable to open directory: %s\n", directory);
+    printf("%s[ERROR] Unable to open directory: %s%s\n", ANSI_COLOR_RED, directory, ANSI_COLOR_RESET);
     free_shares_array(array, amount);
     return NULL;
   }
@@ -370,8 +374,7 @@ static image_t * shares_array(const char *directory, int amount) {
 
   /* Check if all files are opened */
   if(counter < amount) {
-    printf("[ERROR] Unable to open at least %d shares\n", amount);
-    printf("counter is %d and dirent is %s\n", counter, dirent == NULL ? "null" : "not null");
+    printf("%s[ERROR] Unable to open at least %d shares%s\n", ANSI_COLOR_RED, amount, ANSI_COLOR_RESET);
     free_shares_array(array, amount);
     array = NULL;
   }

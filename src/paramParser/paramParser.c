@@ -6,6 +6,8 @@
 
 #include "paramParser.h"
 
+#define ANSI_COLOR_RED "\x1b[31m"
+#define ANSI_COLOR_RESET "\x1b[0m"
 
 static char * copy_str(const char *string);
 static void print_usage();
@@ -33,7 +35,7 @@ struct params parse_params(int argc, char *argv[]) {
     switch(opt) {
       case 'd':
         if(params.action != 0) {
-          printf("[ERROR] You can't use -d and -r at the same time\n");
+          printf("%s[ERROR] You can't use -d and -r at the same time%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
           print_usage();
           params.action = ACTION_ERROR;
           return params;
@@ -42,7 +44,7 @@ struct params parse_params(int argc, char *argv[]) {
         break;
       case 'r':
         if(params.action != 0) {
-          printf("[ERROR] You can't use -d and -r at the same time\n");
+          printf("%s[ERROR] You can't use -d and -r at the same time%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
           print_usage();
           params.action = ACTION_ERROR;
           return params;
@@ -69,7 +71,7 @@ struct params parse_params(int argc, char *argv[]) {
         break;
       case '?':
         /* Set action to -1 and return */
-        printf("[ERROR]Invalid Paramaters\n");
+        printf("%s[ERROR]Invalid Paramaters%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
         print_usage();
         params.action = -1;
         return params;
@@ -80,7 +82,7 @@ struct params parse_params(int argc, char *argv[]) {
   if(params.dir == NULL || params.secretImage == NULL || params.watermark == NULL || params.k == 0 || params.n == 0 || params.action == 0) {
     free_params(params);
     params.action = ACTION_ERROR;
-    printf("[ERROR] Missing parameters\n");
+    printf("%s[ERROR] Missing parameters%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
     print_usage();
   }
 

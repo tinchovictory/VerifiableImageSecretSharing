@@ -328,21 +328,17 @@ matrix_t project_matrix(const matrix_t matrix) {
     goto out;
   }
 
-  // printf("transposed\n");
-
   /* Get (A' x A) */
   multipied = multiply_matrix(transpose, matrix);
   if(multipied == NULL) {
     goto out;
   }
-  // printf("multiplied\n");
 
   /* Get (A' x A)^-1 */
   inverse = inverse_matrix(multipied);
   if(inverse == NULL) {
     goto out;
   }
-  // printf("inversed\n");
 
   free_matrix(multipied);
 
@@ -350,11 +346,9 @@ matrix_t project_matrix(const matrix_t matrix) {
   if(multipied == NULL) {
     goto out;
   }
-  // printf("multiplied\n");
 
   projection = multiply_matrix(multipied, transpose);
 
-  // printf("projected\n");
   /* Free up all matrix */
   out:
   free_matrix(transpose);
