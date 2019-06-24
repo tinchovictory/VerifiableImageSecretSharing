@@ -302,6 +302,7 @@ static int decrypt_image(struct params params) {
 
     if(output.secret == NULL || output.watermark == NULL) {
       free_decrypt_output(output);
+      printf("%s[ERROR] Unable to decrypt%s\n", ANSI_COLOR_RED, ANSI_COLOR_RESET);
       return 1;
     }
 
