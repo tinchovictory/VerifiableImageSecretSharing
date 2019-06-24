@@ -34,12 +34,12 @@ $> cmake ..
 
 Make the target 
 ```
-make test
+make
 ```
 ### Running
 
 Run the compiled output
 
 ```
-./test
+./main -r -s secret1.bmp -m watermark.bmp -k 2 -n 4 -dir ../grupo8/2-4/ -rw ../grupo8/2-4W/RW.bmp
 ```
