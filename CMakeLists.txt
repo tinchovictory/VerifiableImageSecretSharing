@@ -31,19 +31,19 @@ endif()
 set(CMAKE_C_FLAGS, "${CMAKE_C_FLAGS} -lm -pthread -pedantic -pedantic-errors -Wall -Wextra -Werror -Wno-unused-parameter -D_POSIX_C_SOURCE=200112L -D_BSD_SOURCE")
 
 
-add_executable(testMatrix
+add_executable(testMatrix EXCLUDE_FROM_ALL
                 utils/matrix/testMatrix.c
                 utils/matrix/matrix.c
                 utils/multiplicativeInverse/multiplicativeInverse.c
                 utils/gaussElimination/gaussElimination.c)
 
-add_executable(testGaussElimination
+add_executable(testGaussElimination EXCLUDE_FROM_ALL
                 utils/gaussElimination/testGaussElimination.c
                 utils/gaussElimination/gaussElimination.c
                 utils/matrix/matrix.c
                 utils/multiplicativeInverse/multiplicativeInverse.c)
 
-add_executable(encrypter
+add_executable(encrypter EXCLUDE_FROM_ALL
                 encrypter/testEncrypter.c
                 encrypter/encrypter.c
                 utils/matrix/matrix.c
@@ -52,7 +52,7 @@ add_executable(encrypter
                 utils/random/random.c
                 utils/gaussElimination/gaussElimination.c)
 
-add_executable(decrypter
+add_executable(decrypter EXCLUDE_FROM_ALL
                 decrypter/testDecrypter.c
                 decrypter/decrypter.c
                 utils/matrix/matrix.c
@@ -60,7 +60,7 @@ add_executable(decrypter
                 utils/matrixArray/matrixArray.c
                 utils/gaussElimination/gaussElimination.c)
 
-add_executable(encrypterDecrypter
+add_executable(encrypterDecrypter EXCLUDE_FROM_ALL
                 tests/testEncrypterDecrypter.c
                 encrypter/encrypter.c
                 decrypter/decrypter.c
@@ -70,15 +70,15 @@ add_executable(encrypterDecrypter
                 utils/gaussElimination/gaussElimination.c
                 utils/random/random.c)
 
-add_executable(bmpReader
+add_executable(bmpReader EXCLUDE_FROM_ALL
                 bmpReader/testBmpReader.c
                 bmpReader/bmpReader.c)
 
-add_executable(stenography
+add_executable(stenography EXCLUDE_FROM_ALL
                 stenography/testStenography.c
                 stenography/stenography.c)
 
-add_executable(decryptImage
+add_executable(decryptImage EXCLUDE_FROM_ALL
                 tests/testDecrypt.c
                 decrypter/decrypter.c
                 utils/matrix/matrix.c
@@ -89,7 +89,7 @@ add_executable(decryptImage
                 stenography/stenography.c
                 utils/random/random.c)
 
-add_executable(encryptImage
+add_executable(encryptImage EXCLUDE_FROM_ALL
                 tests/testEncrypt.c
                 encrypter/encrypter.c
                 utils/matrix/matrix.c
