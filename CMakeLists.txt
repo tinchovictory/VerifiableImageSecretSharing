@@ -4,7 +4,7 @@ project(VerifiableImages C)
 
 
 
-set(CMAKE_C_FLAGS    "--std=c99 -lm -pthread -pedantic -pedantic-errors -Wall -Wextra -Werror -Wno-unused-parameter -Wno-implicit-fallthrough -D_POSIX_C_SOURCE=200112L ")
+set(CMAKE_C_FLAGS    "--std=c99 -pthread -pedantic -pedantic-errors -Wall -Wextra -Werror -Wno-unused-parameter -Wno-implicit-fallthrough -D_POSIX_C_SOURCE=200112L ")
 
 set(CLANG_TIDY_CHECKS *
    -boost-*
@@ -32,86 +32,86 @@ set(CMAKE_C_FLAGS, "${CMAKE_C_FLAGS} -lm -pthread -pedantic -pedantic-errors -Wa
 
 
 add_executable(testMatrix EXCLUDE_FROM_ALL
-                utils/matrix/testMatrix.c
-                utils/matrix/matrix.c
-                utils/multiplicativeInverse/multiplicativeInverse.c
-                utils/gaussElimination/gaussElimination.c)
+                src/utils/matrix/testMatrix.c
+                src/utils/matrix/matrix.c
+                src/utils/multiplicativeInverse/multiplicativeInverse.c
+                src/utils/gaussElimination/gaussElimination.c)
 
 add_executable(testGaussElimination EXCLUDE_FROM_ALL
-                utils/gaussElimination/testGaussElimination.c
-                utils/gaussElimination/gaussElimination.c
-                utils/matrix/matrix.c
-                utils/multiplicativeInverse/multiplicativeInverse.c)
+                src/utils/gaussElimination/testGaussElimination.c
+                src/utils/gaussElimination/gaussElimination.c
+                src/utils/matrix/matrix.c
+                src/utils/multiplicativeInverse/multiplicativeInverse.c)
 
 add_executable(encrypter EXCLUDE_FROM_ALL
-                encrypter/testEncrypter.c
-                encrypter/encrypter.c
-                utils/matrix/matrix.c
-                utils/multiplicativeInverse/multiplicativeInverse.c
-                utils/matrixArray/matrixArray.c
-                utils/random/random.c
-                utils/gaussElimination/gaussElimination.c)
+                src/encrypter/testEncrypter.c
+                src/encrypter/encrypter.c
+                src/utils/matrix/matrix.c
+                src/utils/multiplicativeInverse/multiplicativeInverse.c
+                src/utils/matrixArray/matrixArray.c
+                src/utils/random/random.c
+                src/utils/gaussElimination/gaussElimination.c)
 
 add_executable(decrypter EXCLUDE_FROM_ALL
-                decrypter/testDecrypter.c
-                decrypter/decrypter.c
-                utils/matrix/matrix.c
-                utils/multiplicativeInverse/multiplicativeInverse.c
-                utils/matrixArray/matrixArray.c
-                utils/gaussElimination/gaussElimination.c)
+                src/decrypter/testDecrypter.c
+                src/decrypter/decrypter.c
+                src/utils/matrix/matrix.c
+                src/utils/multiplicativeInverse/multiplicativeInverse.c
+                src/utils/matrixArray/matrixArray.c
+                src/utils/gaussElimination/gaussElimination.c)
 
 add_executable(encrypterDecrypter EXCLUDE_FROM_ALL
-                tests/testEncrypterDecrypter.c
-                encrypter/encrypter.c
-                decrypter/decrypter.c
-                utils/matrix/matrix.c
-                utils/multiplicativeInverse/multiplicativeInverse.c
-                utils/matrixArray/matrixArray.c
-                utils/gaussElimination/gaussElimination.c
-                utils/random/random.c)
+                src/tests/testEncrypterDecrypter.c
+                src/encrypter/encrypter.c
+                src/decrypter/decrypter.c
+                src/utils/matrix/matrix.c
+                src/utils/multiplicativeInverse/multiplicativeInverse.c
+                src/utils/matrixArray/matrixArray.c
+                src/utils/gaussElimination/gaussElimination.c
+                src/utils/random/random.c)
 
 add_executable(bmpReader EXCLUDE_FROM_ALL
-                bmpReader/testBmpReader.c
-                bmpReader/bmpReader.c)
+                src/bmpReader/testBmpReader.c
+                src/bmpReader/bmpReader.c)
 
 add_executable(stenography EXCLUDE_FROM_ALL
-                stenography/testStenography.c
-                stenography/stenography.c)
+                src/stenography/testStenography.c
+                src/stenography/stenography.c)
 
 add_executable(decryptImage EXCLUDE_FROM_ALL
-                tests/testDecrypt.c
-                decrypter/decrypter.c
-                utils/matrix/matrix.c
-                utils/multiplicativeInverse/multiplicativeInverse.c
-                utils/matrixArray/matrixArray.c
-                utils/gaussElimination/gaussElimination.c
-                bmpReader/bmpReader.c
-                stenography/stenography.c
-                utils/random/random.c)
+                src/tests/testDecrypt.c
+                src/decrypter/decrypter.c
+                src/utils/matrix/matrix.c
+                src/utils/multiplicativeInverse/multiplicativeInverse.c
+                src/utils/matrixArray/matrixArray.c
+                src/utils/gaussElimination/gaussElimination.c
+                src/bmpReader/bmpReader.c
+                src/stenography/stenography.c
+                src/utils/random/random.c)
 
 add_executable(encryptImage EXCLUDE_FROM_ALL
-                tests/testEncrypt.c
-                encrypter/encrypter.c
-                utils/matrix/matrix.c
-                utils/multiplicativeInverse/multiplicativeInverse.c
-                utils/matrixArray/matrixArray.c
-                utils/gaussElimination/gaussElimination.c
-                bmpReader/bmpReader.c
-                stenography/stenography.c
-                utils/random/random.c)
+                src/tests/testEncrypt.c
+                src/encrypter/encrypter.c
+                src/utils/matrix/matrix.c
+                src/utils/multiplicativeInverse/multiplicativeInverse.c
+                src/utils/matrixArray/matrixArray.c
+                src/utils/gaussElimination/gaussElimination.c
+                src/bmpReader/bmpReader.c
+                src/stenography/stenography.c
+                src/utils/random/random.c)
 
 add_executable(main
-                main.c
-                encrypter/encrypter.c
-                decrypter/decrypter.c
-                utils/matrix/matrix.c
-                utils/multiplicativeInverse/multiplicativeInverse.c
-                utils/matrixArray/matrixArray.c
-                utils/gaussElimination/gaussElimination.c
-                bmpReader/bmpReader.c
-                stenography/stenography.c
-                utils/random/random.c
-                paramParser/paramParser.c)
+                src/main.c
+                src/encrypter/encrypter.c
+                src/decrypter/decrypter.c
+                src/utils/matrix/matrix.c
+                src/utils/multiplicativeInverse/multiplicativeInverse.c
+                src/utils/matrixArray/matrixArray.c
+                src/utils/gaussElimination/gaussElimination.c
+                src/bmpReader/bmpReader.c
+                src/stenography/stenography.c
+                src/utils/random/random.c
+                src/paramParser/paramParser.c)
 
 target_link_libraries(main m)
 target_link_libraries(encryptImage m)

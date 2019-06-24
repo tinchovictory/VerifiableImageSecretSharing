@@ -206,6 +206,7 @@ static int decrypt_image(struct params params) {
   shareIdx = malloc(params.k);
   if(shareIdx == NULL) {
     printf("[ERROR] Out of memory\n");
+    err = 1;
     goto err;
   }
   for(int i = 0; i < params.k; i++) {
@@ -216,6 +217,7 @@ static int decrypt_image(struct params params) {
   rw = open_image(params.rwFile);
   if(rw == NULL) {
     printf("[ERROR] Unable to open image RW\n");
+    err = 1;
     goto err;
   }
 
@@ -223,12 +225,14 @@ static int decrypt_image(struct params params) {
   matSharesArray = new_matrix_array(params.k);
   if(matSharesArray == NULL) {
     printf("[ERROR] Out of memory\n");
+    err = 1;
     goto err;
   }
   for(int i = 0; i < get_matrix_array_size(matSharesArray); i++) {
     share = new_matrix(params.n, params.n / params.k + 1);
     if(share == NULL) {
       printf("[ERROR] Out of memory\n");
+      err = 1;
       goto err;
     }
     add_matrix_array(matSharesArray, share, i);
@@ -238,6 +242,7 @@ static int decrypt_image(struct params params) {
   remainder = new_matrix(params.n, params.n);
   if(remainder == NULL) {
     printf("[ERROR] Out of memory\n");
+    err = 1;
     goto err;
   }
   
@@ -245,6 +250,7 @@ static int decrypt_image(struct params params) {
   pixelsArray = malloc(params.n * sizeof(unsigned char));
   if(pixelsArray == NULL) {
     printf("[ERROR] Out of memory\n");
+    err = 1;
     goto err;
   }
 
@@ -253,6 +259,7 @@ static int decrypt_image(struct params params) {
   watermark = new_8bit_image(params.watermark, get_image_width(rw), get_image_height(rw));
   if(secret == NULL || watermark == NULL) {
     printf("[ERROR] Unable to create output images\n");
+    err = 1;
     goto err;
   }
 
