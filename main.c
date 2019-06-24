@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 static int encrypt_image(struct params params) {
   image_t *sharesArray = NULL, secret = NULL, watermark = NULL, rw = NULL;
   matrix_t matS = NULL, matW = NULL, share;
-  int err = 0, pixel = 0, sharesOffset = 0, pixelRw = 0, shareHeight, shareWidth, byte;
+  int err = 0, pixel = 0, sharesOffset = 0, pixelRw = 0, byte;
   unsigned char *pixelsArray = NULL;
 
   /* Open image shares */
@@ -131,11 +131,6 @@ static int encrypt_image(struct params params) {
       err = 1;
       goto err;
     }
-
-    /* Get the share dimesions */
-    share = get_matrix_array_item(output.shares, 0);
-    shareHeight = get_matrix_height(share);
-    shareWidth = get_matrix_width(share);
 
     /* Hide the encrypted values in the shares */
     for(int i = 0; i < params.n; i++) {
@@ -335,7 +330,7 @@ static image_t * shares_array(const char *directory, int amount) {
   struct dirent *dirent;
   struct stat statbuf;
   int counter = 0;
-  char buffer[1000];
+  char buffer[1000] = {0};
 
   /* Alloc array */
   array = (image_t *) calloc(amount, sizeof(image_t));
@@ -353,9 +348,9 @@ static image_t * shares_array(const char *directory, int amount) {
 
   /* Open amount files of the directory */
   while(counter < amount && (dirent = readdir(dir)) != NULL) {
+    memset(&statbuf, 0, sizeof(statbuf));
     lstat(dirent->d_name, &statbuf);
-
-    if(!S_ISDIR(statbuf.st_mode) && strncmp(".", dirent->d_name, 1) != 0) {
+    if(strncmp(".", dirent->d_name, 1) != 0 && strncmp("..", dirent->d_name, 2) != 0 && !S_ISDIR(statbuf.st_mode)) {
       strcpy(buffer, directory);
       strcat(buffer, dirent->d_name);
       array[counter] = open_image(buffer);
@@ -369,7 +364,7 @@ static image_t * shares_array(const char *directory, int amount) {
   /* Check if all files are opened */
   if(counter < amount) {
     printf("[ERROR] Unable to open at least %d shares\n", amount);
-    printf("%d\n", counter);
+    printf("counter is %d and dirent is %s\n", counter, dirent == NULL ? "null" : "not null");
     free_shares_array(array, amount);
     array = NULL;
   }

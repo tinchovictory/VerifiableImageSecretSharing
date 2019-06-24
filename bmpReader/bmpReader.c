@@ -271,8 +271,7 @@ static void write_le_uint16(FILE *ptr, long offset, uint16_t bytes) {
 }
 
 static void write_le_uint32(FILE *ptr, long offset, uint32_t bytes) {
-  uint8_t buf[2];
-
+  uint8_t buf[4];
   /* Transform to little endian */
   for(int i = 0; i < 4; i++) {
     buf[i] = (uint8_t) bytes;

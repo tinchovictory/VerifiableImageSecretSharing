@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "utils/matrix/matrix.h"
-#include "utils/matrixArray/matrixArray.h"
-#include "utils/random/random.h"
-#include "encrypter/encrypter.h"
-#include "decrypter/decrypter.h"
+#include "../utils/matrix/matrix.h"
+#include "../utils/matrixArray/matrixArray.h"
+#include "../utils/random/random.h"
+#include "../encrypter/encrypter.h"
+#include "../decrypter/decrypter.h"
 
 static matrix_t readImage();
 static matrix_t readWatermark();
